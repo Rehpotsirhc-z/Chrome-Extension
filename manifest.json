@@ -3,7 +3,8 @@
     "name": "Extension",
     "version": "1.0",
     "description": "This is an extension",
-    "permissions": [ "activeTab", "tabs" ],
+    "options_page": "settings.html",
+    "permissions": [ "activeTab", "tabs", "storage" ],
     "action": {
         "default_popup": "popup.html"
     },

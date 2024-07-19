@@ -1,0 +1,20 @@
+body {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.input-field {
+    background-color: #383838;
+    color: #ffffff;
+    padding: 10px;
+    border-radius: 8px;
+    border: none;
+    width: 100%;
+    max-width: 40%;
+}
+
+.input-field::placeholder {
+    color: #c1c1c1;
+}
