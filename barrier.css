@@ -8,11 +8,13 @@ body {
 .input-field {
     background-color: #383838;
     color: #ffffff;
-    padding: 10px;
-    border-radius: 8px;
+    padding: 12px;
+    border-radius: 10px;
     border: none;
     width: 100%;
     max-width: 40%;
+    text-align: center;
+    outline: none;
 }
 
 .input-field::placeholder {
