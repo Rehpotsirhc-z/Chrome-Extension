@@ -1,0 +1,52 @@
+body {
+    display: flex;
+    flex-direction: row;
+    margin: 0;
+}
+
+.sidebar {
+    width: 250px;
+    height: 100vh;
+    background-color: #d8d8d8;
+    color: #000000;
+    position: fixed;
+}
+
+.sidebar ul {
+    list-style-type: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 10px;
+    margin: 15px 0;
+}
+
+.sidebar ul li button {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    background-color: #ffffff;
+    color: #000000;
+    border-radius: 10px;
+    text-align: center;
+}
+
+.sidebar ul li button:hover {
+    background-color: #c1c1c1;
+    color: #484848;
+    cursor: pointer;
+}
+
+.content {
+    margin-left: 250px;
+    padding: 20px;
+}
+
+.tabContent {
+    display: none;
+}
+
+.tabContent.active {
+    display: block;
+}

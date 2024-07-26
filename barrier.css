@@ -3,6 +3,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
 }
 
 .input-field {
@@ -19,4 +20,70 @@ body {
 
 .input-field::placeholder {
     color: #c1c1c1;
+}
+
+.forgot-password {
+    color: #383838;
+    text-align: center;
+    outline: none;
+}
+
+.set-password-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    gap: 15px;
+}
+
+.password-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    width: 100%;
+    gap: 0px;
+}
+
+.button {
+    background-color: #757575;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+}
+
+.button:hover {
+    background-color: #4d4d4d;
+    color: #c1c1c1;
+}
+
+.submit-password-button {
+    background-color: #757575;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    margin-top: 40px;
+}
+
+.submit-password-button:hover {
+    background-color: #4d4d4d;
+    color: #c1c1c1;
+}
+
+h3 {
+    color: #383838;
+    font-weight: normal;
 }
