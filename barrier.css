@@ -3,6 +3,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
+    background-color: #d9d9d9;
     flex-direction: column;
 }
 
@@ -28,7 +29,7 @@ body {
     outline: none;
 }
 
-.set-password-section {
+#set-password-section {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,7 +38,7 @@ body {
     gap: 15px;
 }
 
-.password-section {
+#password-section {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -46,7 +47,7 @@ body {
     gap: 0px;
 }
 
-.button {
+button {
     background-color: #757575;
     padding-top: 10px;
     padding-bottom: 10px;
@@ -59,26 +60,20 @@ body {
     border-radius: 10px;
 }
 
-.button:hover {
+button:hover {
     background-color: #4d4d4d;
     color: #c1c1c1;
 }
 
-.submit-password-button {
-    background-color: #757575;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 25px;
-    padding-right: 25px;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
+#set-password-button {
     margin-top: 40px;
 }
 
-.submit-password-button:hover {
+#submit-password-button {
+    margin-top: 40px;
+}
+
+#submit-password-button:hover {
     background-color: #4d4d4d;
     color: #c1c1c1;
 }
