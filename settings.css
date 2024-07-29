@@ -33,12 +33,12 @@ body {
     color: #000000;
     border-radius: 10px;
     text-align: center;
+    cursor: pointer;
 }
 
 .sidebar ul li button:hover {
     background-color: #c1c1c1;
-    color: #484848;
-    cursor: pointer;
+    /* color: #333333; */
 }
 
 .content {
