@@ -32,6 +32,7 @@ function toggleRadioButton(event) {
 
 document.addEventListener("DOMContentLoaded", function () {
     const logoutButton = document.getElementById("logout-button");
+    const changePasswordButton = document.getElementById("change-password-button");
     // const ages3To5ExpandButton = document.getElementById("ages-3-to-5-expand-button");
     // const ages6To12ExpandButton = document.getElementById("ages-6-to-12-expand-button");
     // const ages13To18ExpandButton = document.getElementById("ages-13-to-18-expand-button");
@@ -42,8 +43,9 @@ document.addEventListener("DOMContentLoaded", function () {
     ];
 
 
-    // console.log(localStorage.getItem("authenticated"));
-    if (localStorage.getItem("authenticated") === null || localStorage.getItem("authenticated") === "false" || localStorage.getItem("authenticated") === false) {
+    const authenticated = localStorage.getItem("authenticated");
+
+    if (authenticated === null || authenticated === "false" || authenticated === false) {
         window.location.href = "barrier.html";
     }
 
@@ -70,16 +72,28 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
     logoutButton.addEventListener("click", function () {
-        const password = localStorage.getItem("password");
         const authenticated = localStorage.getItem("authenticated");
 
         if (authenticated !== null || authenticated === "true" || authenticated === true) {
             localStorage.setItem("authenticated", false);
-            console.log(localStorage.getItem("authenticated"));
             // wait for 1 second before redirecting
             // setTimeout(() => {
             //     window.location.href = "settings.html";
             // }, 1000);
+            window.location.href = "barrier.html";
+        }
+    });
+
+    changePasswordButton.addEventListener("click", function () {
+        const authenticated = localStorage.getItem("authenticated");
+
+        // TODO how to make it not a prompt? At least use the stars to mask it. Should be a popup in the middle.
+        const passwordConfirmation = prompt("Enter current password");
+        const newPassword = prompt("Enter new password");
+
+        if (passwordConfirmation === localStorage.getItem("password") && newPassword !== null && newPassword !== "") {
+            localStorage.setItem("password", newPassword);
+            localStorage.setItem("authenticated", false);
             window.location.href = "barrier.html";
         }
     });
