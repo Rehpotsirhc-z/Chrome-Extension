@@ -1,340 +1,294 @@
-function openTab(evt, tabName) {
-    document.querySelectorAll(".tabcontent")
-        .forEach(element => element.style.display = "none");
+// GLOBAL VARIABLES
+const ages = ["ages-3-to-5", "ages-6-to-12", "ages-13-to-18", "custom"];
+const blockingCategories = [
+    "profanity",
+    "web-based-games",
+    "social-media-and-forums",
+    "monetary-transactions",
+    "explicit-content",
+    "drugs",
+    "gambling",
+];
+const customCheckboxes = blockingCategories.map((c) => `${c}-checkbox`);
 
-    document.querySelectorAll(".tablink")
-        .forEach(element => element.classList.remove("active"));
+// PAGE LOAD
+document.addEventListener("DOMContentLoaded", () => {
+    // CHECK AUTHENTICATION
+    const authenticated = localStorage.getItem("authenticated") === "true";
+    if (!authenticated) window.location.href = "barrier.html";
 
-    // console.log("Active tabName: ", tabName);
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
+    // VARIABLES
+    const [
+        logoutButton,
+        changePasswordButton,
+        changePasswordPrompt,
+        submitPasswordButton,
+        oldPasswordField,
+        newPasswordField,
+        newPasswordConfirmationField,
+    ] = [
+        "logout-button",
+        "change-password-button",
+        "change-password-prompt",
+        "change-password-submit-button",
+        "old-password-field",
+        "new-password-field",
+        "confirm-new-password-field",
+    ].map((id) => document.getElementById(id));
 
+    // Make checkboxes change localStorage values
+    customCheckboxes.forEach((checkbox) => {
+        document.getElementById(checkbox).addEventListener("click", () => {
+            toggleRestriction(event.target.value);
+        });
+    });
 
-function toggleExpandButton(event, sectionId) {
-    var section = document.getElementById(sectionId);
-    if (section.classList.contains("expanded")) {
-        section.classList.remove("expanded");
-        section.style.maxHeight = "0px";
-    } else {
-        section.classList.add("expanded");
-        section.style.maxHeight = section.scrollHeight + 10 + "px";
-    }
-}
+    // TABLINKS SIDE BAR
+    // Make tablinks open the corresponding tabcontent
+    document.querySelectorAll(".tablink").forEach((tabLink) => {
+        tabLink.addEventListener("click", (event) => {
+            const href = tabLink.dataset.href;
+            openTab(event, href.substring(1));
+        });
+    });
 
+    // Open first tab by default
+    document.querySelector(".tablink")?.click();
 
-function toggleRadioButton(event) {
-    var targetID = this.getAttribute("data-target").replace("#", "");
-    let radioButton = document.getElementById(targetID);
-    radioButton.checked = true;
-}
+    // EXPANDED PRESETS
+    // Observe the expanded presets to resize them when the window is resized
+    observePresetResize();
 
+    // Make expand buttons expand the corresponding section
+    ages.forEach((age) =>
+        document
+            .getElementById(`${age}-expand-button`)
+            .addEventListener("click", (e) => toggleExpandButton(e, age)),
+    );
 
-function observePresetResize() {
-    const presets = document.querySelectorAll(".blocking-preset");
+    // Make clicking on blank areas of expanded Custom preset toggle checkboxes
+    document.querySelectorAll(".blocking-checkbox").forEach((div) =>
+        div.addEventListener("click", (event) => {
+            event.stopPropagation(); // Prevent clicks from propagating to parent elements
+            checkbox = event.currentTarget.querySelector(
+                'input[type="checkbox"]',
+            ).checked ^= true;
+        }),
+    );
 
-    presets.forEach(preset => {
-        const observer = new ResizeObserver(() => {
-            const expanded = document.getElementById(`${preset.getAttribute("data-target").replace("#", "")}-expanded`);
-            if (expanded) {
-                expanded.style.width = `${preset.offsetWidth}px`;
+    // PRESET RADIO BUTTONS
+    ages.forEach((age) => {
+        const radioButton = document.getElementById(`${age}-radio`);
+        const preset = document.getElementById(`${age}-preset`);
+
+        // Check radio button based on saved value
+        if (localStorage.getItem(age) === "true") radioButton.checked = true;
+
+        // Save the selected preset to localStorage on radio button selection
+        radioButton.addEventListener("change", (event) => {
+            if (event.target.checked) {
+                clearRadioButtons();
+                applyRestrictions(age);
+                localStorage.setItem(age, "true");
             }
         });
 
-        observer.observe(preset);
-    });
-}
-
-function clearRadioButtons() {
-    const radioButtons = [
-        "ages-3-to-5",
-        "ages-6-to-12",
-        "ages-13-to-18",
-        "custom"
-    ]
-
-    radioButtons.forEach(radioButton => {
-        localStorage.setItem(radioButton, false);
-    })
-}
-
-function clearRestrictions() {
-    const restrictions = [
-        "profanity",
-        "web-based-games",
-        "social-media-and-forums",
-        "monetary-transactions",
-        "explicit-content",
-        "drugs",
-        "gambling"
-    ]
-
-    restrictions.forEach(restriction => {
-        localStorage.setItem(restriction, false);
-    })
-}
-
-
-document.addEventListener("DOMContentLoaded", () => {
-    const logoutButton = document.getElementById("logout-button");
-    const changePasswordButton = document.getElementById("change-password-button");
-    var changePasswordPrompt = document.getElementById("change-password-prompt");
-    var submitPasswordButton = document.getElementById("change-password-submit-button");
-    const oldPasswordField = document.getElementById("old-password-field");
-    const newPasswordField = document.getElementById("confirm-new-password-field");
-    const newPasswordConfirmationField = document.getElementById("confirm-new-password-field");
-    // const ages3To5ExpandButton = document.getElementById("ages-3-to-5-expand-button");
-    // const ages6To12ExpandButton = document.getElementById("ages-6-to-12-expand-button");
-    // const ages13To18ExpandButton = document.getElementById("ages-13-to-18-expand-button");
-
-    const expandButtonIds = [
-        "ages-3-to-5-expand-button",
-        "ages-6-to-12-expand-button",
-        "ages-13-to-18-expand-button",
-        "custom-expand-button"
-    ];
-
-    const radioButtonIds = [
-        "ages-3-to-5",
-        "ages-6-to-12",
-        "ages-13-to-18",
-        "custom"
-    ]
-
-    // Custom blocking checkboxes
-    const customCheckboes = [
-        "profanity-input",
-        "web-based-games-input",
-        "social-media-and-forums-input",
-        "monetary-transactions-input",
-        "explicit-content-input",
-        "drugs-input",
-        "gambling-input"
-    ]
-
-    customCheckboes.forEach(checkbox => {
-        document.getElementById(checkbox).addEventListener("click", () => {
-            toggleRestriction(checkbox);
+        // Make clicking on the preset select the corresponding radio button
+        preset.addEventListener("click", () => {
+            const target = document.getElementById(`${age}-radio`);
+            if (target) target.checked = true;
+            radioButton.dispatchEvent(new Event("change")); // Trigger change event (defined above)
         });
     });
 
-
-
-    const authenticated = localStorage.getItem("authenticated");
-
-    if (authenticated === null || authenticated === "false" || authenticated === false) {
-        window.location.href = "barrier.html";
-    }
-
-    document.querySelectorAll(".tablink").forEach(tabLink => {
-        tabLink.addEventListener("click", (event) => {
-            // Use event.currentTarget to get the clicked element
-            const href = event.currentTarget.getAttribute("href");
-            openTab(event, href.replace("#", ""));
-        });
-    });
-
-
-    document.querySelector(".tablink").click();
-
-    observePresetResize();
-
-    document.querySelectorAll(".blocking-checkbox").forEach(div => {
-        div.addEventListener("click", (event) => {
-            // Prevent clicks from propagating to parent elements
-            event.stopPropagation();
-            const checkbox = event.currentTarget.querySelector("input[type=\"checkbox\"]");
-            checkbox.checked = !checkbox.checked;
-        });
-    });
-
-    expandButtonIds.forEach(buttonId => {
-        const sectionId = buttonId.replace("expand-button", "expanded");
-        document.getElementById(buttonId).addEventListener("click", event =>
-            toggleExpandButton(event, sectionId)
-        );
-    });
-
-    document.querySelectorAll(".blocking-preset")
-        .forEach(preset => preset.addEventListener("click", toggleRadioButton));
-
-    radioButtonIds.forEach(radioButtonId => {
-        if (localStorage.getItem(radioButtonId) === "true") {
-            document.getElementById(radioButtonId).checked = true;
-        }
-
-        const presetButton = document.getElementById((`${radioButtonId}-preset`).replace("#", ""));
-
-        presetButton.addEventListener("click", event => {
-            clearRadioButtons();
-            applyRestrictions(radioButtonId);
-            localStorage.setItem(radioButtonId, true);
-        });
-
-
-        // SAME AS PRESETBUTTON
-        // document.getElementById(radioButtonId).addEventListener("click", event => {
-        //     console.log("Radio button clicked");
-        //     const id = radioButtonId;
-        //     applyRestrictions(id);
-        // });
-    });
-
-
+    // LOGOUT & CHANGE PASSWORD
+    // Make logout button log the user out
     logoutButton.addEventListener("click", () => {
-        const authenticated = localStorage.getItem("authenticated");
-
-        if (authenticated !== null || authenticated === "true" || authenticated === true) {
-            localStorage.setItem("authenticated", false);
-            // wait for 1 second before redirecting
-            // setTimeout(() => {
-            //     window.location.href = "settings.html";
-            // }, 1000);
+        if (localStorage.getItem("authenticated") === "true") {
+            localStorage.setItem("authenticated", "false");
             window.location.href = "barrier.html";
         }
     });
 
+    // Show the change password prompt when the button is clicked
     changePasswordButton.addEventListener("click", () => {
-        changePasswordPrompt.style.display = "flex";
+        changePasswordPrompt.classList.add("active");
         oldPasswordField.focus();
     });
 
+    // CHANGE PASSWORD PROMPT
     submitPasswordButton.addEventListener("click", submitPassword);
 
-    document.onkeydown = e => {
-        if (e.key === "Escape" && changePasswordPrompt.style.display !== "none") {
-            changePasswordPrompt.style.display = "none";
-            e.preventDefault();
-        }
-    }
+    // TODO Close prompt when clicking out of the prompt
+    // Close the prompt when pressing Escape
+    document.onkeydown = (e) =>
+        e.key === "Escape" && changePasswordPrompt.classList.remove("active");
 
-    newPasswordConfirmationField.onkeydown = e => {
-        if (e.key === "Enter") {
-            submitPassword();
-            e.preventDefault();
-        }
-    };
+    // Submit password when pressing Enter
+    newPasswordConfirmationField.onkeydown = (e) =>
+        e.key === "Enter" && submitPassword();
 
-    // CHART/STATISTICS LOGIC
+    // TODO STATISTICS LOGIC
     const ctx = document.getElementById("myChart").getContext("2d");
     const myChart = new Chart(ctx, {
         type: "pie",
         date: {
             labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
-            datasets: [{
-                label: "# of Votes",
-                data: [12, 19, 3, 5, 2, 3],
-                backgroundColor: [
-                    "rgba(255, 99, 132, 0.2)", // Red
-                    "rgba(54, 162, 235, 0.2)", // Blue
-                    "rgba(255, 206, 86, 0.2)", // Yellow
-                    "rgba(75, 192, 192, 0.2)", // Green
-                    "rgba(153, 102, 255, 0.2)", // Purple
-                    "rgba(255, 159, 64, 0.2)" // Orange
-                ],
-                borderColor: [
-                    "rgba(255, 99, 132, 1)", // Red
-                    "rgba(54, 162, 235, 1)", // Blue
-                    "rgba(255, 206, 86, 1)", // Yellow
-                    "rgba(75, 192, 192, 1)", // Green
-                    "rgba(153, 102, 255, 1)", // Purple
-                    "rgba(255, 159, 64, 1)" // Orange
-                ],
-                borderWidth: 1
-            }]
-        }
+            datasets: [
+                {
+                    label: "# of Votes",
+                    data: [12, 19, 3, 5, 2, 3],
+                    backgroundColor: [
+                        "rgba(255, 99, 132, 0.2)", // Red
+                        "rgba(54, 162, 235, 0.2)", // Blue
+                        "rgba(255, 206, 86, 0.2)", // Yellow
+                        "rgba(75, 192, 192, 0.2)", // Green
+                        "rgba(153, 102, 255, 0.2)", // Purple
+                        "rgba(255, 159, 64, 0.2)", // Orange
+                    ],
+                    borderColor: [
+                        "rgba(255, 99, 132, 1)", // Red
+                        "rgba(54, 162, 235, 1)", // Blue
+                        "rgba(255, 206, 86, 1)", // Yellow
+                        "rgba(75, 192, 192, 1)", // Green
+                        "rgba(153, 102, 255, 1)", // Purple
+                        "rgba(255, 159, 64, 1)", // Orange
+                    ],
+                    borderWidth: 1,
+                },
+            ],
+        },
     });
-
-
 });
 
-function toggleRestriction(id) {
-    const restriction = id.replace("-input", "");
-    const isChecked = localStorage.getItem(restriction) === "true";
+// FUNCTIONS
+// Resize the expanded presets when the window is resized
+function observePresetResize() {
+    document.querySelectorAll(".blocking-preset").forEach((preset) => {
+        const targetId = preset.dataset.target.replace("-radio", "-expanded");
+        const expanded = document.getElementById(targetId);
 
-    localStorage.setItem(restriction, !isChecked);
+        if (expanded) {
+            new ResizeObserver(() => {
+                expanded.style.width = `${preset.offsetWidth}px`;
+            }).observe(preset);
+        }
+    });
 }
 
+// Open the tab with the given name and close all others
+function openTab(event, tabName) {
+    const tabContent = document.querySelectorAll(".tabcontent");
+    const tabLinks = document.querySelectorAll(".tablink");
+
+    tabContent.forEach((content) => (content.style.display = "none"));
+    tabLinks.forEach((link) => link.classList.remove("active"));
+
+    document.getElementById(tabName).style.display = "block";
+    event.currentTarget.classList.add("active");
+}
+
+// Toggle the value of a restriction in localStorage
+function toggleRestriction(value) {
+    const isChecked = localStorage.getItem(value) === "true";
+    localStorage.setItem(value, !isChecked); // Toggle value (it will automatically convert to string)
+}
+
+// Save restrictions based on the selected preset and update checkboxes to match
 function applyRestrictions(id) {
-    switch (id) {
-        case "ages-3-to-5":
-            clearRestrictions();
-            presetRestrictions = [
-                "profanity",
-                "web-based-games",
-                "social-media-and-forums",
-                "monetary-transactions",
-                "explicit-content",
-                "drugs",
-                "gambling"
-            ]
-            presetRestrictions.forEach(restriction => {
-                localStorage.setItem(restriction, true);
-            });
-            // localStorage.setItem(restriction, true);
-            break;
-        case "ages-6-to-12":
-            clearRestrictions();
-            presetRestrictions = [
-                "profanity",
-                "social-media-and-forums",
-                "monetary-transactions",
-                "explicit-content",
-                "drugs",
-                "gambling"
-            ]
-            presetRestrictions.forEach(restriction => {
-                localStorage.setItem(restriction, true);
-            });
-            break;
-        case "ages-13-to-18":
-            clearRestrictions();
-            presetRestrictions = [
-                "explicit-content",
-                "drugs",
-                "gambling"
-            ]
-            presetRestrictions.forEach(restriction => {
-                localStorage.setItem(restriction, true);
-            });
-            break;
-        case "custom":
-            setCheckboxes();
-            // clearRestrictions();
-            break;
+    const restrictions = {
+        "ages-3-to-5": [
+            "profanity",
+            "web-based-games",
+            "social-media-and-forums",
+            "monetary-transactions",
+            "explicit-content",
+            "drugs",
+            "gambling",
+        ],
+        "ages-6-to-12": [
+            "profanity",
+            "social-media-and-forums",
+            "monetary-transactions",
+            "explicit-content",
+            "drugs",
+            "gambling",
+        ],
+        "ages-13-to-18": ["explicit-content", "drugs", "gambling"],
+    };
+
+    const presetRestrictions = restrictions[id];
+
+    if (presetRestrictions) {
+        clearRestrictions();
+        presetRestrictions.forEach((restriction) =>
+            localStorage.setItem(restriction, "true"),
+        );
     }
+    // Otherwise assumed to be custom
+
     setCheckboxes();
 }
 
-function setCheckboxes() {
-    const customCheckboxes = [
-        "profanity-input",
-        "web-based-games-input",
-        "social-media-and-forums-input",
-        "monetary-transactions-input",
-        "explicit-content-input",
-        "drugs-input",
-        "gambling-input"
-    ]
+// Clear all restrictions in localStorage
+function clearRestrictions() {
+    blockingCategories.forEach((restriction) =>
+        localStorage.setItem(restriction, "false"),
+    );
+}
 
-    customCheckboxes.forEach(checkbox => {
-        const isChecked = localStorage.getItem(checkbox.replace("-input", "")) === "true";
-        document.getElementById(checkbox).checked = isChecked;
+// Expand or collapse the section corresponding to the clicked button
+function toggleExpandButton(event, age) {
+    const preset = document.getElementById(`${age}-preset`);
+    var section = document.getElementById(`${age}-expanded`);
+
+    // We need to set the max-height manually to remove the lag when closing the
+    // expanded preset
+    if (section.classList.contains("expanded")) {
+        section.classList.remove("expanded");
+        section.style.maxHeight = "0px";
+    } else {
+        section.classList.add("expanded");
+        section.style.maxHeight = section.scrollHeight + 20 + "px";
+        // section.scrollHeight + preset.offsetWidth + "px";
+    }
+}
+
+// Clear all preset selections in localStorage
+function clearRadioButtons() {
+    ages.forEach((radioButton) => {
+        localStorage.setItem(radioButton, "false");
     });
 }
 
-function submitPassword() {
-    const oldPassword = document.getElementById("old-password-field").value;
-    const newPassword = document.getElementById("new-password-field").value;
-    const newPasswordConfirmation = document.getElementById("confirm-new-password-field").value;
+// Set checkboxes to match localStorage values
+function setCheckboxes() {
+    blockingCategories.forEach((age) => {
+        const isChecked = localStorage.getItem(age) === "true";
+        document.getElementById(`${age}-checkbox`).checked = isChecked;
+    });
+}
 
-    if (oldPassword === localStorage.getItem("password") && newPassword === newPasswordConfirmation && newPassword !== null && newPassword !== "") {
-        localStorage.setItem("password", newPassword);
-        localStorage.setItem("authenticated", false);
-        window.location.href = "barrier.html";
-    } else if (oldPassword !== localStorage.getItem("password")) {
-        alert("Incorrect password. Please try again.");
-    } else if (newPassword === null || newPassword === "") {
-        alert("New password cannot be empty. Please try again.");
-    }
+// Set the new password
+function submitPassword() {
+    const [oldPassword, newPassword, newPasswordConfirmation] = [
+        "old-password-field",
+        "new-password-field",
+        "confirm-new-password-field",
+    ].map((id) => document.getElementById(id).value);
+
+    const storedPassword = localStorage.getItem("password");
+
+    if (oldPassword !== localStorage.getItem("password"))
+        return alert("Incorrect password. Please try again.");
+
+    if (!newPassword)
+        return alert("New password cannot be empty. Please try again.");
+
+    if (newPassword !== newPasswordConfirmation)
+        return alert("New passwords do not match. Please try again.");
+
+    localStorage.setItem("password", newPassword);
+    localStorage.setItem("authenticated", "false");
+    window.location.href = "barrier.html";
 }

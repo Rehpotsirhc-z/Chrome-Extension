@@ -1,10 +1,7 @@
 body {
     display: flex;
-    background-color: #d9d9d9;
     flex-direction: row;
     margin: 0;
-    width: 100vw;
-    height: 100vh;
 }
 
 .sidebar {
@@ -76,6 +73,10 @@ body {
     font-size: 24px;
 }
 
+.change-password-title {
+    margin-bottom: 40px;
+}
+
 .blocking-preset {
     display: flex;
     flex-direction: row;
@@ -113,7 +114,7 @@ body {
     margin: 0 5px;
 }
 
-#custom-expanded{
+#custom-expanded {
     display: flex;
     flex-direction: column;
     width: 50%;
@@ -131,25 +132,6 @@ body {
 
 .blocking-checkbox:last-child {
     margin-bottom: 10px;
-}
-
-.round-button {
-    background-color: #757575;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    padding-left: 25px;
-    padding-right: 25px;
-    color: white;
-    font-size: 16px;
-    font-weight: bold;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.round-button:hover {
-    background-color: #4d4d4d;
-    color: #c1c1c1;
 }
 
 .change-password-prompt {
@@ -176,22 +158,14 @@ body {
 
 .change-password-prompt.active {
     display: flex;
-    color: #ec3d3d;
 }
 
-#change-password-submit-button{
+#change-password-submit-button {
     max-width: 125px;
     margin-top: 40px;
+    margin-bottom: 0.67em;
 }
 
-.input-field {
-    background-color: #383838;
-    color: #ffffff;
-    padding: 12px;
-    border-radius: 10px;
-    border: none;
-    width: 100%;
+.password-field {
     max-width: 95%;
-    text-align: center;
-    outline: none;
 }

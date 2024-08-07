@@ -1,0 +1,41 @@
+body {
+    background-color: #d9d9d9;
+    margin: 0;
+    width: 100vw;
+    height: 100vh;
+}
+
+.password-field {
+    background-color: #383838;
+    color: #ffffff;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    max-width: 40%;
+    text-align: center;
+    outline: none;
+}
+
+.password-field::placeholder {
+    color: #c1c1c1;
+}
+
+.rounded-button {
+    background-color: #757575;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.rounded-button:hover {
+    background-color: #4d4d4d;
+    color: #c1c1c1;
+}

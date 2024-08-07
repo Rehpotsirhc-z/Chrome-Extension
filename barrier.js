@@ -1,74 +1,84 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const passwordSection = document.getElementById("password-section");
-    const setPasswordSection = document.getElementById("set-password-section");
+// PAGE LOAD
+document.addEventListener("DOMContentLoaded", () => {
+    // VARIABLES
+    const [passwordInputField, submitPasswordButton] = [
+        "password-field",
+        "submit-password-button",
+    ].map((id) => document.getElementById(id));
 
-    const setPasswordButton = document.getElementById("set-password-button");
-    const confirmPasswordInput = document.getElementById("confirm-password-field");
+    const [
+        setPasswordInputField,
+        confirmPasswordInputField,
+        setPasswordButton,
+    ] = [
+        "set-password-field",
+        "confirm-password-field",
+        "set-password-button",
+    ].map((id) => document.getElementById(id));
 
-    const submitPasswordButton = document.getElementById("submit-password-button");
-    const passwordInputField = document.getElementById("password-field");
-
-    // Check if there is a stored password in local
+    // PASSWORD AUTHENTICATION
     if (localStorage.getItem("password")) {
-        passwordSection.style.display = "flex";
-        setPasswordSection.style.display = "none";
+        showSection("password");
+        passwordInputField.focus();
     } else {
-        passwordSection.style.display = "none";
-        setPasswordSection.style.display = "flex";
+        showSection("setPassword");
+        setPasswordInputField.focus();
     }
 
-    setPasswordButton.addEventListener("click", setPassword);
-    confirmPasswordInput.onkeydown = function (e) {
-        if (e.key === "Enter") {
-            setPassword();
-        }
-    };
-
+    // PASSWORD MANAGEMENT
+    // Submit password when button is clicked or Enter is pressed
     submitPasswordButton.addEventListener("click", submitPassword);
-    passwordInputField.onkeydown = function (e) {
-        if (e.key === "Enter") {
-            submitPassword();
-        }
-    };
+    passwordInputField.onkeydown = (e) => e.key === "Enter" && submitPassword();
+
+    // Set password when button is clicked or Enter is pressed
+    setPasswordButton.addEventListener("click", setPassword);
+    confirmPasswordInputField.onkeydown = (e) =>
+        e.key === "Enter" && setPassword();
 });
 
+// FUNCTIONS
+// Submit the password
+function submitPassword() {
+    const password = localStorage.getItem("password");
+    const attemptedPassword = document.getElementById("password-field").value;
 
+    if (password === attemptedPassword) {
+        localStorage.setItem("authenticated", "true");
+        window.location.href = "settings.html";
+    } else {
+        document
+            .getElementById("incorrect-password-message")
+            .classList.add("active");
+    }
+}
 
+// Set the new password
 function setPassword() {
-    const setPasswordInput = document.getElementById("set-password-field");
-    const password = setPasswordInput.value;
-    const confirmPasswordInput = document.getElementById("confirm-password-field");
-    const confirmPassword = confirmPasswordInput.value;
-    const passwordSection = document.getElementById("password-section");
-    const setPasswordSection = document.getElementById("set-password-section");
+    const password = document.getElementById("set-password-field").value;
+    const confirmPassword = document.getElementById(
+        "confirm-password-field",
+    ).value;
 
     if (password && password === confirmPassword) {
         localStorage.setItem("password", password);
-        passwordSection.style.display = "flex";
-        setPasswordSection.style.display = "none";
+        showSection("password");
     } else {
         alert(password ? "Passwords do not match" : "Password cannot be empty");
     }
 }
 
-function submitPassword() {
-    const passwordInput = document.getElementById("password-field");
+// Show the specified section
+function showSection(sectionToShow) {
+    const passwordSection = document.getElementById("password-section");
+    const setPasswordSection = document.getElementById("set-password-section");
 
-    const password = localStorage.getItem("password");
-
-    const attemptedPassword = passwordInput.value;
-
-    if (password === attemptedPassword) {
-        localStorage.setItem("authenticated", true);
-
-        // wait for 1 second before redirecting
-        // setTimeout(() => {
-        //   window.location.href = "settings.html";
-        // }, 1000);
-        window.location.href = "settings.html";
+    if (sectionToShow === "password") {
+        passwordSection.classList.add("active");
+        setPasswordSection.classList.remove("active");
+    } else if (sectionToShow === "setPassword") {
+        passwordSection.classList.remove("active");
+        setPasswordSection.classList.add("active");
     } else {
-        // show the incorrect password message
-        const incorrectPasswordMessage = document.getElementById("incorrect-password-message");
-        incorrectPasswordMessage.style.display = "block";
+        console.error("Invalid section specified.");
     }
 }

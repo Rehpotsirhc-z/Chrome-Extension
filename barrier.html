@@ -1,26 +1,45 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Hide Password</title>
-        <link rel="stylesheet" href="barrier.css">
-        <script src="barrier.js"></script>
-    </head>
-    <body>
-        <div id="password-section">
-            <h1 style="margin-bottom: 80px;">Enter Password to Continue</h1>
-            <input class="input-field" type="password" id="password-field" placeholder="Password">
-            <p class="forgot-password">Forgot Password?</p>
-            <p id="incorrect-password-message">Incorrect Password</p>
-            <button id="submit-password-button">Submit</button>
-        </div>
-        <div id="set-password-section">
-            <h1>First Time Setup</h1>
-            <!-- TODO Instructions -->
-            <h3 style="margin-bottom: 40px;">Text Explaining</h3>
-            <input class="input-field" type="password" id="set-password-field" placeholder="Set Password">
-            <input class="input-field" type="password" id="confirm-password-field" placeholder="Confirm Password">
-            <button id="set-password-button">Set Password</button>
-        </div>
-    </body>
+  <head>
+    <meta charset="utf-8" />
+    <title>Hide Password</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="barrier.css" />
+    <script src="barrier.js"></script>
+  </head>
+  <body>
+    <div id="password-section">
+      <h1 style="margin-bottom: 80px">Enter Password to Continue</h1>
+      <input
+        class="password-field"
+        type="password"
+        id="password-field"
+        placeholder="Password"
+      />
+      <!-- TODO Forgot Password-->
+      <p class="forgot-password">Forgot Password?</p>
+      <p id="incorrect-password-message">Incorrect Password</p>
+      <button class="rounded-button" id="submit-password-button">Submit</button>
+    </div>
+    <div id="set-password-section">
+      <h1>First Time Setup</h1>
+      <!-- TODO Instructions -->
+      <h3 style="margin-bottom: 40px">Text Explaining</h3>
+      <input
+        class="password-field"
+        type="password"
+        id="set-password-field"
+        placeholder="Set Password"
+      />
+      <input
+        class="password-field"
+        type="password"
+        id="confirm-password-field"
+        placeholder="Confirm Password"
+      />
+      <button class="rounded-button" id="set-password-button">
+        Set Password
+      </button>
+    </div>
+  </body>
 </html>

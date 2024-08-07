@@ -1,136 +1,241 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
-
-<head>
-    <meta charset="utf-8">
+  <head>
+    <meta charset="utf-8" />
     <title>Settings</title>
-    <link rel="stylesheet" href="settings.css">
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="settings.css" />
     <script src="chartjs/chart.umd.js"></script>
     <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script src="settings.js"></script>
-</head>
+  </head>
 
-<body>
+  <body>
     <div class="sidebar">
-        <ul>
-            <li><button class="tablink" href="#blocking">Blocking</button></li>
-            <li><button class="tablink" href="#management">Management</button></li>
-            <li><button class="tablink" href="#statistics">Statistics</button></li>
-            <li><button class="tablink" id="logout-button">Logout</button></li>
-        </ul>
+      <ul>
+        <li><button class="tablink" data-href="#blocking">Blocking</button></li>
+        <li>
+          <button class="tablink" data-href="#management">Management</button>
+        </li>
+        <li>
+          <button class="tablink" data-href="#statistics">Statistics</button>
+        </li>
+        <li><button class="tablink" id="logout-button">Logout</button></li>
+      </ul>
     </div>
     <div class="content">
-        <!-- TODO text not aligned -->
-        <div id="blocking" class="tabcontent">
-            <h3 class="tabcontent-title">Blocking</h3>
-            <div class="blocking-preset" data-target="#ages-3-to-5" id="ages-3-to-5-preset">
-                <input type="radio" id="ages-3-to-5" name="blocking" value="ages-3-to-5" />
-                <label for="ages-3-to-5">Ages 3–5</label>
-                <button class="expand-button" id="ages-3-to-5-expand-button">-></button>
-            </div>
-            <div class="blocking-preset-expanded" id="ages-3-to-5-expanded">
-                <ul>
-                    <li>Profanity</li>
-                    <li>Web-Based Games</li>
-                    <li>Social Media / Forums</li>
-                    <li>Monetary Transactions</li>
-                    <li>Explicit Content</li>
-                    <li>Drugs</li>
-                    <li>Gambling</li>
-                </ul>
-            </div>
-            <div class="blocking-preset" data-target="#ages-6-to-12" id="ages-6-to-12-preset">
-                <input type="radio" id="ages-6-to-12" name="blocking" value="ages-6-to-12" />
-                <label for="ages-6-to-12">Ages 6–12</label>
-                <button class="expand-button" id="ages-6-to-12-expand-button">-></button>
-            </div>
-            <div class="blocking-preset-expanded" id="ages-6-to-12-expanded">
-                <ul>
-                    <li>Profanity</li>
-                    <li>Social Media / Forums</li>
-                    <li>Monetary Transactions</li>
-                    <li>Explicit Content</li>
-                    <li>Drugs</li>
-                    <li>Gambling</li>
-                </ul>
-            </div>
-            <div class="blocking-preset" data-target="#ages-13-to-18" id="ages-13-to-18-preset">
-                <input type="radio" id="ages-13-to-18" name="blocking" value="ages-13-to-18" />
-                <label for="ages-13-to-18">Ages 13–18</label>
-                <button class="expand-button" id="ages-13-to-18-expand-button">-></button>
-            </div>
-            <div class="blocking-preset-expanded" id="ages-13-to-18-expanded">
-                <ul>
-                    <li>Explicit Content</li>
-                    <li>Drugs</li>
-                    <li>Gambling</li>
-                </ul>
-            </div>
-            <div class="blocking-preset" data-target="#custom" id="custom-preset">
-                <input type="radio" id="custom" name="blocking" value="custom" />
-                <label for="custom">Custom</label>
-                <button class="expand-button" id="custom-expand-button">-></button>
-            </div>
-            <div class="blocking-preset-expanded" id="custom-expanded">
-                <div class="blocking-checkbox" id="profanity">
-                    <input type="checkbox" id="profanity-input" name="profanity-input" value="Profanity">
-                    <label for="profanity-input">Profanity</label><br>
-                </div>
-                <div class="blocking-checkbox" id="web-based-games">
-                    <input type="checkbox" id="web-based-games-input" name="web-based-games-input"
-                        value="web-based-games">
-                    <label for="web-based-games-input">Web-Based Games</label><br>
-                </div>
-                <div class="blocking-checkbox" id="social-media-and-forums">
-                    <input type="checkbox" id="social-media-and-forums-input" name="social-media-and-forums-input"
-                        value="social-media-and-forums">
-                    <label for="social-media-and-forums-input">Social Media / Forums</label><br>
-                </div>
-                <div class="blocking-checkbox" id="monetary-transactions">
-                    <input type="checkbox" id="monetary-transactions-input" name="monetary-transactions-input"
-                        value="monetary-transactions">
-                    <label for="monetary-transactions-input">Monetary Transactions</label><br>
-                </div>
-                <div class="blocking-checkbox" id="explicit-content">
-                    <input type="checkbox" id="explicit-content-input" name="explicit-content-input"
-                        value="explicit-content">
-                    <label for="explicit-content-input">Explicit Content</label><br>
-                </div>
-                <div class="blocking-checkbox" id="drugs">
-                    <input type="checkbox" id="drugs-input" name="drugs-input" value="drugs">
-                    <label for="drugs-input">Drugs</label><br>
-                </div>
-                <div class="blocking-checkbox" id="gambling">
-                    <input type="checkbox" id="gambling-input" name="gambling-input" value="gambling">
-                    <label for="gambling-input">Gambling</label><br>
-                </div>
-            </div>
+      <div id="blocking" class="tabcontent">
+        <h1 class="tabcontent-title">Blocking</h1>
+        <!-- TODO remove data target -->
+        <!-- REMOVE VALUE -->
+        <div class="blocking-preset-group" id="ages-3-to-5-group">
+          <div
+            class="blocking-preset"
+            data-target="ages-3-to-5-radio"
+            id="ages-3-to-5-preset"
+          >
+            <input
+              type="radio"
+              id="ages-3-to-5-radio"
+              name="blocking"
+              value="ages-3-to-5"
+            />
+            <label for="ages-3-to-5">Ages 3–5</label>
+            <button class="expand-button" id="ages-3-to-5-expand-button">
+              ->
+            </button>
+          </div>
+          <div class="blocking-preset-expanded" id="ages-3-to-5-expanded">
+            <ul>
+              <li>Profanity</li>
+              <li>Web-Based Games</li>
+              <li>Social Media / Forums</li>
+              <li>Monetary Transactions</li>
+              <li>Explicit Content</li>
+              <li>Drugs</li>
+              <li>Gambling</li>
+            </ul>
+          </div>
         </div>
+        <div class="blocking-preset-group" id="ages-6-to-12-group">
+          <div
+            class="blocking-preset"
+            data-target="ages-6-to-12-radio"
+            id="ages-6-to-12-preset"
+          >
+            <input
+              type="radio"
+              id="ages-6-to-12-radio"
+              name="blocking"
+              value="ages-6-to-12"
+            />
+            <label for="ages-6-to-12">Ages 6–12</label>
+            <button class="expand-button" id="ages-6-to-12-expand-button">
+              ->
+            </button>
+          </div>
+          <div class="blocking-preset-expanded" id="ages-6-to-12-expanded">
+            <ul>
+              <li>Profanity</li>
+              <li>Social Media / Forums</li>
+              <li>Monetary Transactions</li>
+              <li>Explicit Content</li>
+              <li>Drugs</li>
+              <li>Gambling</li>
+            </ul>
+          </div>
+        </div>
+        <div class="blocking-preset-group" id="ages-13-to-18-group">
+          <div
+            class="blocking-preset"
+            data-target="ages-13-to-18-radio"
+            id="ages-13-to-18-preset"
+          >
+            <input
+              type="radio"
+              id="ages-13-to-18-radio"
+              name="blocking"
+              value="ages-13-to-18"
+            />
+            <label for="ages-13-to-18">Ages 13–18</label>
+            <button class="expand-button" id="ages-13-to-18-expand-button">
+              ->
+            </button>
+          </div>
+          <div class="blocking-preset-expanded" id="ages-13-to-18-expanded">
+            <ul>
+              <li>Explicit Content</li>
+              <li>Drugs</li>
+              <li>Gambling</li>
+            </ul>
+          </div>
+        </div>
+        <div class="blocking-preset-group" id="custom-group">
+          <div
+            class="blocking-preset"
+            data-target="custom-radio"
+            id="custom-preset"
+          >
+            <input
+              type="radio"
+              id="custom-radio"
+              name="blocking"
+              value="custom"
+            />
+            <label for="custom">Custom</label>
+            <button class="expand-button" id="custom-expand-button">-></button>
+          </div>
+          <div class="blocking-preset-expanded" id="custom-expanded">
+            <div class="blocking-checkbox" id="profanity">
+              <input
+                type="checkbox"
+                id="profanity-checkbox"
+                name="profanity-checkbox"
+                value="Profanity"
+              />
+              <label for="profanity-checkbox">Profanity</label><br />
+            </div>
+            <div class="blocking-checkbox" id="web-based-games">
+              <input
+                type="checkbox"
+                id="web-based-games-checkbox"
+                name="web-based-games-checkbox"
+                value="web-based-games"
+              />
+              <label for="web-based-games-checkbox">Web-Based Games</label
+              ><br />
+            </div>
+            <div class="blocking-checkbox" id="social-media-and-forums">
+              <input
+                type="checkbox"
+                id="social-media-and-forums-checkbox"
+                name="social-media-and-forums-checkbox"
+                value="social-media-and-forums"
+              />
+              <label for="social-media-and-forums-checkbox"
+                >Social Media / Forums</label
+              ><br />
+            </div>
+            <div class="blocking-checkbox" id="monetary-transactions">
+              <input
+                type="checkbox"
+                id="monetary-transactions-checkbox"
+                name="monetary-transactions-checkbox"
+                value="monetary-transactions"
+              />
+              <label for="monetary-transactions-checkbox"
+                >Monetary Transactions</label
+              ><br />
+            </div>
+            <div class="blocking-checkbox" id="explicit-content">
+              <input
+                type="checkbox"
+                id="explicit-content-checkbox"
+                name="explicit-content-checkbox"
+                value="explicit-content"
+              />
+              <label for="explicit-content-checkbox">Explicit Content</label
+              ><br />
+            </div>
+            <div class="blocking-checkbox" id="drugs">
+              <input
+                type="checkbox"
+                id="drugs-checkbox"
+                name="drugs-checkbox"
+                value="drugs"
+              />
+              <label for="drugs-checkbox">Drugs</label><br />
+            </div>
+            <div class="blocking-checkbox" id="gambling">
+              <input
+                type="checkbox"
+                id="gambling-checkbox"
+                name="gambling-checkbox"
+                value="gambling"
+              />
+              <label for="gambling-checkbox">Gambling</label><br />
+            </div>
+          </div>
+        </div>
+      </div>
 
-        <!-- TODO Custom -->
-        <!-- It"s the same, but instead of a list, they"re checkboxes. -->
-
-        <div id="management" class="tabcontent">
-            <h3 class="tabcontent-title">Management</h3>
-            <button class="round-button" id="change-password-button">Change Password</button>
-            <div class="change-password-prompt" id="change-password-prompt">
-                <h1 style="margin-bottom: 40px;">Change Password</h1>
-                <input class="input-field" type="password" id="old-password-field"
-                    placeholder="Enter Old Password"></input>
-                <input class="input-field" type="password" id="new-password-field"
-                    placeholder="Enter New Password"></input>
-                <input class="input-field" type="password" id="confirm-new-password-field"
-                    placeholder="Confirm New Password"></input>
-                <button class="round-button" id="change-password-submit-button">Submit</button>
-            </div>
+      <div id="management" class="tabcontent">
+        <h1 class="tabcontent-title">Management</h1>
+        <!-- TODO click off the prompt to close, and add close button -->
+        <button class="rounded-button" id="change-password-button">
+          Change Password
+        </button>
+        <div class="change-password-prompt" id="change-password-prompt">
+          <h1 class="change-password-title">Change Password</h1>
+          <input
+            class="password-field"
+            type="password"
+            id="old-password-field"
+            placeholder="Enter Old Password"
+          />
+          <input
+            class="password-field"
+            type="password"
+            id="new-password-field"
+            placeholder="Enter New Password"
+          />
+          <input
+            class="password-field"
+            type="password"
+            id="confirm-new-password-field"
+            placeholder="Confirm New Password"
+          />
+          <button class="rounded-button" id="change-password-submit-button">
+            Submit
+          </button>
         </div>
-        <div id="statistics" class="tabcontent">
-            <!-- TODO Statistics -->
-             <p>asd</p>
-            <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
-            <canvas id="myChart"></canvas>
-        </div>
+      </div>
+      <div id="statistics" class="tabcontent">
+        <!-- TODO Statistics -->
+        <h1 class="tabcontent-title">Statistics</h1>
+        <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
+        <canvas id="myChart"></canvas>
+      </div>
     </div>
-</body>
-
+  </body>
 </html>
