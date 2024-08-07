@@ -120,6 +120,8 @@ body {
 }
 
 .blocking-checkbox {
+    display: flex;
+    align-items: center;
     margin: 0px 10px;
 }
 

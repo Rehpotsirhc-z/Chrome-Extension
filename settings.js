@@ -45,6 +45,19 @@ function observePresetResize() {
     });
 }
 
+function clearRadioButtons() {
+    const radioButtons = [
+        "ages-3-to-5",
+        "ages-6-to-12",
+        "ages-13-to-18",
+        "custom"
+    ]
+
+    radioButtons.forEach(radioButton => {
+        localStorage.setItem(radioButton, false);
+    })
+}
+
 function clearRestrictions() {
     const restrictions = [
         "profanity",
@@ -126,9 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     observePresetResize();
 
-    document.querySelectorAll(".blocking-preset")
-        .forEach(preset => preset.addEventListener("click", toggleRadioButton));
-
     document.querySelectorAll(".blocking-checkbox").forEach(div => {
         div.addEventListener("click", (event) => {
             // Prevent clicks from propagating to parent elements
@@ -145,22 +155,30 @@ document.addEventListener("DOMContentLoaded", () => {
         );
     });
 
+    document.querySelectorAll(".blocking-preset")
+        .forEach(preset => preset.addEventListener("click", toggleRadioButton));
+
     // TODO Also make the radio button checked based on the preset
     radioButtonIds.forEach(radioButtonId => {
-        console.log((`${radioButtonId}-preset`).replace("#", ""));
+        if (localStorage.getItem(radioButtonId) === "true") {
+            document.getElementById(radioButtonId).checked = true;
+        }
+
         const presetButton = document.getElementById((`${radioButtonId}-preset`).replace("#", ""));
-        console.log(presetButton);
 
         presetButton.addEventListener("click", event => {
-            const id = radioButtonId;
-            applyRestrictions(id);
+            clearRadioButtons();
+            applyRestrictions(radioButtonId);
+            localStorage.setItem(radioButtonId, true);
         });
 
 
-        document.getElementById(radioButtonId).addEventListener("click", event => {
-            const id = radioButtonId;
-            applyRestrictions(id);
-        });
+        // SAME AS PRESETBUTTON
+        // document.getElementById(radioButtonId).addEventListener("click", event => {
+        //     console.log("Radio button clicked");
+        //     const id = radioButtonId;
+        //     applyRestrictions(id);
+        // });
     });
 
 
@@ -279,7 +297,6 @@ function applyRestrictions(id) {
 }
 
 function setCheckboxes() {
-    console.log("che");
     const customCheckboxes = [
         "profanity-input",
         "web-based-games-input",
