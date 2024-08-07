@@ -158,7 +158,6 @@ document.addEventListener("DOMContentLoaded", () => {
     document.querySelectorAll(".blocking-preset")
         .forEach(preset => preset.addEventListener("click", toggleRadioButton));
 
-    // TODO Also make the radio button checked based on the preset
     radioButtonIds.forEach(radioButtonId => {
         if (localStorage.getItem(radioButtonId) === "true") {
             document.getElementById(radioButtonId).checked = true;
@@ -197,13 +196,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
     changePasswordButton.addEventListener("click", () => {
         changePasswordPrompt.style.display = "flex";
+        oldPasswordField.focus();
     });
 
     submitPasswordButton.addEventListener("click", submitPassword);
-    // TODO
-    // oldPasswordField.onkeydown = e => e.key === "Escape" && changePasswordPrompt.style.display = "flex";
-    // newPasswordField.onkeydown = e => e.key === "Escape" && submitPassword();
-    newPasswordConfirmationField.onkeydown = e => e.key === "Enter" && submitPassword();
+
+    document.onkeydown = e => {
+        if (e.key === "Escape" && changePasswordPrompt.style.display !== "none") {
+            changePasswordPrompt.style.display = "none";
+            e.preventDefault();
+        }
+    }
+
+    newPasswordConfirmationField.onkeydown = e => {
+        if (e.key === "Enter") {
+            submitPassword();
+            e.preventDefault();
+        }
+    };
 
     // CHART/STATISTICS LOGIC
     const ctx = document.getElementById("myChart").getContext("2d");
