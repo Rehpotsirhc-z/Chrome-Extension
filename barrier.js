@@ -27,13 +27,20 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // PASSWORD MANAGEMENT
     // Submit password when button is clicked or Enter is pressed
+    // We use addEventListener instead of onkeydown to preserve default
+    // keybindings
     submitPasswordButton.addEventListener("click", submitPassword);
-    passwordInputField.onkeydown = (e) => e.key === "Enter" && submitPassword();
+    passwordInputField.addEventListener("keydown", (e) => {
+        e.key === "Enter" && submitPassword();
+    });
 
     // Set password when button is clicked or Enter is pressed
+    // We use addEventListener instead of onkeydown to preserve default
+    // keybindings
     setPasswordButton.addEventListener("click", setPassword);
-    confirmPasswordInputField.onkeydown = (e) =>
+    confirmPasswordInputField.addEventListener("keydown", (e) => {
         e.key === "Enter" && setPassword();
+    });
 });
 
 // FUNCTIONS

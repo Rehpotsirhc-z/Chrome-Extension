@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Make checkboxes change localStorage values
     customCheckboxes.forEach((checkbox) => {
-        document.getElementById(checkbox).addEventListener("click", () => {
+        document.getElementById(checkbox).addEventListener("click", (event) => {
             toggleRestriction(event.target.value);
         });
     });
@@ -121,12 +121,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // TODO Close prompt when clicking out of the prompt
     // Close the prompt when pressing Escape
-    document.onkeydown = (e) =>
+    // We use addEventListener instead of onkeydown to preserve default
+    // keybindings
+    document.addEventListener("keydown", (e) => {
         e.key === "Escape" && changePasswordPrompt.classList.remove("active");
+    });
 
     // Submit password when pressing Enter
-    newPasswordConfirmationField.onkeydown = (e) =>
+    newPasswordConfirmationField.addEventListener("keydown", (e) => {
         e.key === "Enter" && submitPassword();
+    });
 
     // TODO STATISTICS LOGIC
     const ctx = document.getElementById("myChart").getContext("2d");
