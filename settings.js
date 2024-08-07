@@ -95,6 +95,10 @@ document.addEventListener("DOMContentLoaded", function () {
             localStorage.setItem("password", newPassword);
             localStorage.setItem("authenticated", false);
             window.location.href = "barrier.html";
+        } else if (passwordConfirmation !== localStorage.getItem("password")) {
+            alert("Incorrect password. Please try again.");
+        } else if (newPassword === null || newPassword === "") {
+            alert("New password cannot be empty. Please try again.");
         }
     });
 });

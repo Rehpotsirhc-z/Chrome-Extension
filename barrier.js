@@ -23,10 +23,12 @@ document.addEventListener("DOMContentLoaded", function () {
         const password = setPasswordInput.value;
         const confirmPassword = confirmPasswordInput.value;
 
-        if (password === confirmPassword && password !== "") {
+        if (password && password === confirmPassword) {
             localStorage.setItem("password", password);
             passwordSection.style.display = "flex";
             setPasswordSection.style.display = "none";
+        } else {
+            alert(password ? "Passwords do not match" : "Password cannot be empty");
         }
     });
 
