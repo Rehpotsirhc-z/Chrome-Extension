@@ -45,17 +45,20 @@ body {
     margin-left: 275px;
     padding-top: 0px;
     padding: 0px 30px;
-    width: 50%;
+    width: 100%;
 }
 
 .tabcontent {
     display: none;
     height: 100vh;
     width: 100%;
+    width: 100%;
 }
 
 .active {
-    display: block;
+    /* display: grid; */
+    justify-content: center;
+    align-items: center;
     /* height: 100vh;
     width: 100%; */
 }
@@ -78,8 +81,10 @@ body {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    text-align: center;
     background-color: #ffffff;
     padding: 10px;
+    max-width: 50%;
     border-radius: 10px;
     /* max-width: 500px; */
     cursor: pointer;
@@ -94,7 +99,7 @@ body {
     /* padding: 10px; */
     border-radius: 10px;
     margin-bottom: 10px;
-    width: 100%;
+    width: 50%;
     max-height: 0px;
     overflow: hidden;
     transition: max-height 1s ease-in-out;
@@ -102,6 +107,28 @@ body {
 
 .blocking-preset-expanded.expanded {
     max-height: 700px;
+}
+
+.blocking-preset input[type="radio"] {
+    margin: 0 5px;
+}
+
+#custom-expanded{
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.blocking-checkbox {
+    margin: 0px 10px;
+}
+
+.blocking-checkbox:first-child {
+    margin-top: 10px;
+}
+
+.blocking-checkbox:last-child {
+    margin-bottom: 10px;
 }
 
 .round-button {
@@ -121,4 +148,55 @@ body {
 .round-button:hover {
     background-color: #4d4d4d;
     color: #c1c1c1;
+}
+
+.change-password-prompt {
+    display: none;
+    align-items: center;
+    background-color: #f8f8f8;
+    border-radius: 10px;
+    flex-direction: column;
+    gap: 15px;
+    height: auto;
+    /* box-shadow: #000000; */
+    justify-content: center;
+    margin-left: 25%;
+    margin-right: 25%;
+    margin-top: 25vh;
+    max-width: 100%;
+    max-width: 50%;
+    padding: 10px;
+    width: auto;
+}
+
+.change-password-prompt.active {
+    display: flex;
+    color: #ec3d3d;
+}
+
+.submit-password-button{
+    background-color: #757575;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    color: white;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    max-width: 125px;
+}
+
+.input-field {
+    background-color: #383838;
+    color: #ffffff;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    max-width: 95%;
+    text-align: center;
+    outline: none;
 }

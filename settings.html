@@ -1,84 +1,137 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <title>Settings</title>
-        <link rel="stylesheet" href="settings.css">
-        <script src="settings.js"></script>
-    </head>
-    <body>
-        <div class="sidebar">
-            <ul>
-                <li><button class="tablink" href="#blocking">Blocking</button></li>
-                <li><button class="tablink" href="#management">Management</button></li>
-                <li><button class="tablink" href="#statistics">Statistics</button></li>
-                <li><button class="tablink" id="logout-button">Logout</button></li>
-            </ul>
+
+<head>
+    <meta charset="utf-8">
+    <title>Settings</title>
+    <link rel="stylesheet" href="settings.css">
+    <script src="settings.js"></script>
+</head>
+
+<body>
+    <div class="sidebar">
+        <ul>
+            <li><button class="tablink" href="#blocking">Blocking</button></li>
+            <li><button class="tablink" href="#management">Management</button></li>
+            <li><button class="tablink" href="#statistics">Statistics</button></li>
+            <li><button class="tablink" id="logout-button">Logout</button></li>
+        </ul>
+    </div>
+    <div class="content">
+        <div id="blocking" class="tabcontent">
+            <h3 class="tabcontent-title">Blocking</h3>
+            <div class="blocking-preset" data-target="#ages-3-to-5">
+                <input type="radio" id="ages-3-to-5" name="blocking" value="ages-3-to-5" />
+                <label for="ages-3-to-5">Ages 3–5</label>
+                <button class="expand-button" id="ages-3-to-5-expand-button">-></button>
+            </div>
+            <div class="blocking-preset-expanded" id="ages-3-to-5-expanded">
+                <ul>
+                    <li>Profanity</li>
+                    <li>Web-Based Games</li>
+                    <li>Social Media / Forums</li>
+                    <li>Monetary Transactions</li>
+                    <li>Explicit Content</li>
+                    <li>Drugs</li>
+                    <li>Gambling</li>
+                </ul>
+            </div>
+            <div class="blocking-preset" data-target="#ages-6-to-12">
+                <input type="radio" id="ages-6-to-12" name="blocking" value="ages-6-to-12" />
+                <label for="ages-6-to-12">Ages 6–12</label>
+                <button class="expand-button" id="ages-6-to-12-expand-button">-></button>
+            </div>
+            <div class="blocking-preset-expanded" id="ages-6-to-12-expanded">
+                <ul>
+                    <li>Profanity</li>
+                    <li>Social Media / Forums</li>
+                    <li>Monetary Transactions</li>
+                    <li>Explicit Content</li>
+                    <li>Drugs</li>
+                    <li>Gambling</li>
+                </ul>
+            </div>
+            <div class="blocking-preset" data-target="#ages-13-to-18">
+                <input type="radio" id="ages-13-to-18" name="blocking" value="ages-13-to-18" />
+                <label for="ages-13-to-18">Ages 13–18</label>
+                <button class="expand-button" id="ages-13-to-18-expand-button">-></button>
+            </div>
+            <div class="blocking-preset-expanded" id="ages-13-to-18-expanded">
+                <ul>
+                    <li>Explicit Content</li>
+                    <li>Drugs</li>
+                    <li>Gambling</li>
+                </ul>
+            </div>
+            <div class="blocking-preset" data-target="#custom">
+                <input type="radio" id="custom" name="blocking" value="custom" />
+                <label for="custom">Custom</label>
+                <button class="expand-button" id="custom-expand-button">-></button>
+            </div>
+            <div class="blocking-preset-expanded" id="custom-expanded">
+                <div class="blocking-checkbox" id="profanity">
+                    <input type="checkbox" id="profanity-input" name="profanity-input" value="Profanity">
+                    <label for="profanity-input">Profanity</label><br>
+                </div>
+                <div class="blocking-checkbox" id="web-based-games">
+                    <input type="checkbox" id="web-based-games-input" name="web-based-games-input"
+                        value="web-based-games">
+                    <label for="web-based-games-input">Web-Based Games</label><br>
+                </div>
+                <div class="blocking-checkbox" id="social-media-and-forums">
+                    <input type="checkbox" id="social-media-and-forums-input" name="social-media-and-forums-input"
+                        value="social-media-and-forums">
+                    <label for="social-media-and-forums-input">Social Media / Forums</label><br>
+                </div>
+                <div class="blocking-checkbox" id="monetary-transactions">
+                    <input type="checkbox" id="monetary-transactions-input" name="monetary-transactions-input"
+                        value="monetary-transactions">
+                    <label for="monetary-transactions-input">Monetary Transactions</label><br>
+                </div>
+                <div class="blocking-checkbox" id="explicit-content">
+                    <input type="checkbox" id="explicit-content-input" name="explicit-content-input"
+                        value="explicit-content">
+                    <label for="explicit-content-input">Explicit Content</label><br>
+                </div>
+                <div class="blocking-checkbox" id="drugs">
+                    <input type="checkbox" id="drugs-input" name="drugs-input" value="drugs">
+                    <label for="drugs-input">Drugs</label><br>
+                </div>
+                <div class="blocking-checkbox" id="gambling">
+                    <input type="checkbox" id="gambling-input" name="gambling-input" value="gambling">
+                    <label for="gambling-input">Gambling</label><br>
+                </div>
+            </div>
         </div>
-        <div class="content">
-            <div id="blocking" class="tabcontent">
-                <h3 class="tabcontent-title">Blocking</h3>
-                <div class="blocking-preset" data-target="#ages-3-to-5">
-                    <input type="radio" id="ages-3-to-5" name="blocking" value="ages-3-to-5"/>
-                    <label for="ages-3-to-5">Ages 3–5</label>
-                    <button class="expand-button" id="ages-3-to-5-expand-button">-></button>
-                </div>
-                <div class="blocking-preset-expanded" id="ages-3-to-5-expanded">
-                    <ul>
-                        <li>Profanity</li>
-                        <li>Web-Based Games</li>
-                        <li>Social Media / Forums</li>
-                        <li>Monetary Transactions</li>
-                        <li>Explicit Content</li>
-                        <li>Drugs</li>
-                        <li>Gambling</li>
-                    </ul>
-                </div>
-                <div class="blocking-preset" data-target="ages-6-to-12">
-                    <input type="radio" id="ages-6-to-12" name="blocking" value="ages-6-to-12"/>
-                    <label for="ages-6-to-12">Ages 6–12</label>
-                    <button class="expand-button" id="ages-6-to-12-expand-button">-></button>
-                </div>
-                <div class="blocking-preset-expanded" id="ages-6-to-12-expanded">
-                    <ul>
-                        <li>Profanity</li>
-                        <li>Social Media / Forums</li>
-                        <li>Monetary Transactions</li>
-                        <li>Explicit Content</li>
-                        <li>Drugs</li>
-                        <li>Gambling</li>
-                    </ul>
-                </div>
-                <div class="blocking-preset" data-target="ages-13-to-18">
-                    <input type="radio" id="ages-13-to-18" name="blocking" value="ages-13-to-18"/>
-                    <label for="ages-13-to-18">Ages 13–18</label>
-                    <button class="expand-button" id="ages-13-to-18-expand-button">-></button>
-                </div>
-                <div class="blocking-preset-expanded" id="ages-13-to-18-expanded">
-                    <ul>
-                        <li>Explicit Content</li>
-                        <li>Drugs</li>
-                        <li>Gambling</li>
-                    </ul>
-                </div>
 
-                <!-- TODO Custom -->
-                <!-- It"s the same, but instead of a list, they"re checkboxes. -->
+        <!-- TODO Custom -->
+        <!-- It"s the same, but instead of a list, they"re checkboxes. -->
 
+        <div id="management" class="tabcontent">
+            <h3 class="tabcontent-title">Management</h3>
+            <button class="round-button" id="change-password-button">Change Password</button>
+            <div class="change-password-prompt" id="change-password-prompt">
+                <h1>Change Password</h1>
+                <input class="input-field" type="password" id="old-password-field"
+                    placeholder="Enter Old Password"></input>
+                <input class="input-field" type="password" id="new-password-field"
+                    placeholder="Enter New Password"></input>
+                <input class="input-field" type="password" id="confirm-new-password-field"
+                    placeholder="Confirm New Password"></input>
+                <button class="submit-password-button" id="change-password-submit-button">Submit</button>
             </div>
-            <div id="management" class="tabcontent">
-                <h3 class="tabcontent-title">Management</h3>
-                <button class="round-button" id="change-password-button">Change Password</button>
-            </div>
-            <div id="statistics" class="tabcontent">
-                <!-- <h3 class="tabcontent-title">Statistics</h3>
+        </div>
+        <div id="statistics" class="tabcontent">
+            <!-- TODO Statistics -->
+            <!-- <h3 class="tabcontent-title">Statistics</h3>
                 <p>Here you can block certain websites.</p>
                 <form>
                     <label for="block">l:</label>
                     <input type="text" id="block" name="block">
                     <input type="submit" value="Block">
                 </form> -->
-            </div>
         </div>
-    </body>
+    </div>
+</body>
+
 </html>

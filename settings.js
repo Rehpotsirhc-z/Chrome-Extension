@@ -1,9 +1,9 @@
 function openTab(evt, tabName) {
-    Array.from(document.getElementsByClassName("tabcontent"))
+    document.querySelectorAll(".tabcontent")
         .forEach(element => element.style.display = "none");
 
-    Array.from(document.getElementsByClassName("tablink"))
-        .forEach(element => element.className = element.className.replace(" active", ""));
+    document.querySelectorAll(".tablink")
+        .forEach(element => element.classList.remove("active"));
 
     // console.log("Active tabName: ", tabName);
     document.getElementById(tabName).style.display = "block";
@@ -30,16 +30,37 @@ function toggleRadioButton(event) {
 }
 
 
-document.addEventListener("DOMContentLoaded", function () {
+function observePresetResize() {
+    const presets = document.querySelectorAll('.blocking-preset');
+
+    presets.forEach(preset => {
+        const observer = new ResizeObserver(() => {
+            const expanded = document.getElementById(`${preset.getAttribute('data-target').replace("#", "")}-expanded`);
+            if (expanded) {
+                expanded.style.width = `${preset.offsetWidth}px`;
+            }
+        });
+
+        observer.observe(preset);
+    });
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
     const logoutButton = document.getElementById("logout-button");
     const changePasswordButton = document.getElementById("change-password-button");
+    var changePasswordPrompt = document.getElementById("change-password-prompt");
+    var submitPasswordButton = document.getElementById("change-password-submit-button");
+    const newPasswordConfirmation = document.getElementById("confirm-new-password-field");
     // const ages3To5ExpandButton = document.getElementById("ages-3-to-5-expand-button");
     // const ages6To12ExpandButton = document.getElementById("ages-6-to-12-expand-button");
     // const ages13To18ExpandButton = document.getElementById("ages-13-to-18-expand-button");
+
     const expandButtonIds = [
         "ages-3-to-5-expand-button",
         "ages-6-to-12-expand-button",
-        "ages-13-to-18-expand-button"
+        "ages-13-to-18-expand-button",
+        "custom-expand-button"
     ];
 
 
@@ -49,29 +70,40 @@ document.addEventListener("DOMContentLoaded", function () {
         window.location.href = "barrier.html";
     }
 
-    Array.from(document.getElementsByClassName("tablink")).forEach(tabLink => {
-        tabLink.addEventListener("click", function (event) {
-            openTab(event, this.getAttribute("href").replace("#", ""));
+    document.querySelectorAll(".tablink").forEach(tabLink => {
+        tabLink.addEventListener("click", (event) => {
+            // Use event.currentTarget to get the clicked element
+            const href = event.currentTarget.getAttribute("href");
+            openTab(event, href.replace("#", ""));
         });
     });
 
 
     document.querySelector(".tablink").click();
 
+    observePresetResize();
 
-    Array.from(document.getElementsByClassName("blocking-preset"))
+    document.querySelectorAll('.blocking-preset')
         .forEach(preset => preset.addEventListener("click", toggleRadioButton));
 
+    document.querySelectorAll('.blocking-checkbox').forEach(div => {
+        div.addEventListener('click', (event) => {
+            // Prevent clicks from propagating to parent elements
+            event.stopPropagation();
+            const checkbox = event.currentTarget.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+        });
+    });
 
     expandButtonIds.forEach(buttonId => {
         const sectionId = buttonId.replace("expand-button", "expanded");
-        document.getElementById(buttonId).addEventListener("click", event => 
+        document.getElementById(buttonId).addEventListener("click", event =>
             toggleExpandButton(event, sectionId)
         );
     });
 
 
-    logoutButton.addEventListener("click", function () {
+    logoutButton.addEventListener("click", () => {
         const authenticated = localStorage.getItem("authenticated");
 
         if (authenticated !== null || authenticated === "true" || authenticated === true) {
@@ -84,21 +116,31 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    changePasswordButton.addEventListener("click", function () {
-        const authenticated = localStorage.getItem("authenticated");
-
-        // TODO how to make it not a prompt? At least use the stars to mask it. Should be a popup in the middle.
-        const passwordConfirmation = prompt("Enter current password");
-        const newPassword = prompt("Enter new password");
-
-        if (passwordConfirmation === localStorage.getItem("password") && newPassword !== null && newPassword !== "") {
-            localStorage.setItem("password", newPassword);
-            localStorage.setItem("authenticated", false);
-            window.location.href = "barrier.html";
-        } else if (passwordConfirmation !== localStorage.getItem("password")) {
-            alert("Incorrect password. Please try again.");
-        } else if (newPassword === null || newPassword === "") {
-            alert("New password cannot be empty. Please try again.");
-        }
+    changePasswordButton.addEventListener("click", () => {
+        changePasswordPrompt.style.display = "flex";
     });
+
+    submitPasswordButton.addEventListener("click", submitPassword);
+    newPasswordConfirmation.onkeydown = function (e) {
+        if (e.key === "Enter") {
+            submitPassword();
+        }
+    };
+
 });
+
+function submitPassword() {
+    const oldPassword = document.getElementById("old-password-field").value;
+    const newPassword = document.getElementById("new-password-field").value;
+    const newPasswordConfirmation = document.getElementById("confirm-new-password-field").value;
+
+    if (oldPassword === localStorage.getItem("password") && newPassword === newPasswordConfirmation && newPassword !== null && newPassword !== "") {
+        localStorage.setItem("password", newPassword);
+        localStorage.setItem("authenticated", false);
+        window.location.href = "barrier.html";
+    } else if (oldPassword !== localStorage.getItem("password")) {
+        alert("Incorrect password. Please try again.");
+    } else if (newPassword === null || newPassword === "") {
+        alert("New password cannot be empty. Please try again.");
+    }
+}
