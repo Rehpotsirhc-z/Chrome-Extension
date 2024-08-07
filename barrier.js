@@ -36,12 +36,16 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (password === attemptedPassword) {
             localStorage.setItem("authenticated", true);
-            console.log(localStorage.getItem("authenticated"));
+
             // wait for 1 second before redirecting
             // setTimeout(() => {
             //     window.location.href = "settings.html";
             // }, 1000);
             window.location.href = "settings.html";
+        } else{
+            // show the incorrect password message
+            const incorrectPasswordMessage = document.getElementById("incorrect-password-message");
+            incorrectPasswordMessage.style.display = "block";
         }
     });
 });
