@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <title>Settings</title>
     <link rel="stylesheet" href="settings.css">
+    <script src="chartjs/chart.umd.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
     <script src="settings.js"></script>
 </head>
 
@@ -18,9 +20,10 @@
         </ul>
     </div>
     <div class="content">
+        <!-- TODO text not aligned -->
         <div id="blocking" class="tabcontent">
             <h3 class="tabcontent-title">Blocking</h3>
-            <div class="blocking-preset" data-target="#ages-3-to-5">
+            <div class="blocking-preset" data-target="#ages-3-to-5" id="ages-3-to-5-preset">
                 <input type="radio" id="ages-3-to-5" name="blocking" value="ages-3-to-5" />
                 <label for="ages-3-to-5">Ages 3–5</label>
                 <button class="expand-button" id="ages-3-to-5-expand-button">-></button>
@@ -36,7 +39,7 @@
                     <li>Gambling</li>
                 </ul>
             </div>
-            <div class="blocking-preset" data-target="#ages-6-to-12">
+            <div class="blocking-preset" data-target="#ages-6-to-12" id="ages-6-to-12-preset">
                 <input type="radio" id="ages-6-to-12" name="blocking" value="ages-6-to-12" />
                 <label for="ages-6-to-12">Ages 6–12</label>
                 <button class="expand-button" id="ages-6-to-12-expand-button">-></button>
@@ -51,7 +54,7 @@
                     <li>Gambling</li>
                 </ul>
             </div>
-            <div class="blocking-preset" data-target="#ages-13-to-18">
+            <div class="blocking-preset" data-target="#ages-13-to-18" id="ages-13-to-18-preset">
                 <input type="radio" id="ages-13-to-18" name="blocking" value="ages-13-to-18" />
                 <label for="ages-13-to-18">Ages 13–18</label>
                 <button class="expand-button" id="ages-13-to-18-expand-button">-></button>
@@ -63,7 +66,7 @@
                     <li>Gambling</li>
                 </ul>
             </div>
-            <div class="blocking-preset" data-target="#custom">
+            <div class="blocking-preset" data-target="#custom" id="custom-preset">
                 <input type="radio" id="custom" name="blocking" value="custom" />
                 <label for="custom">Custom</label>
                 <button class="expand-button" id="custom-expand-button">-></button>
@@ -111,25 +114,21 @@
             <h3 class="tabcontent-title">Management</h3>
             <button class="round-button" id="change-password-button">Change Password</button>
             <div class="change-password-prompt" id="change-password-prompt">
-                <h1>Change Password</h1>
+                <h1 style="margin-bottom: 40px;">Change Password</h1>
                 <input class="input-field" type="password" id="old-password-field"
                     placeholder="Enter Old Password"></input>
                 <input class="input-field" type="password" id="new-password-field"
                     placeholder="Enter New Password"></input>
                 <input class="input-field" type="password" id="confirm-new-password-field"
                     placeholder="Confirm New Password"></input>
-                <button class="submit-password-button" id="change-password-submit-button">Submit</button>
+                <button class="round-button" id="change-password-submit-button">Submit</button>
             </div>
         </div>
         <div id="statistics" class="tabcontent">
             <!-- TODO Statistics -->
-            <!-- <h3 class="tabcontent-title">Statistics</h3>
-                <p>Here you can block certain websites.</p>
-                <form>
-                    <label for="block">l:</label>
-                    <input type="text" id="block" name="block">
-                    <input type="submit" value="Block">
-                </form> -->
+             <p>asd</p>
+            <!-- <canvas id="myChart" width="400" height="400"></canvas> -->
+            <canvas id="myChart"></canvas>
         </div>
     </div>
 </body>
