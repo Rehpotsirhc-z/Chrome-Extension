@@ -23,7 +23,6 @@ handler.setFormatter(formatter)
 
 
 logger = logging.getLogger(__name__)
-logger.addHand
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
@@ -73,8 +72,12 @@ class Ratio:
             raise ValueError("Ratios must be non-negative")
 
 
-def generate_label_file():
-    pass
+def generate_label_file(img_dir, dest_dir, class_id):
+    img_dir = Path(img_dir).absolute() if isinstance(img_dir, str) else img_dir
+    dest_dir = Path(dest_dir).absolute() if isinstance(dest_dir, str) else dest_dir
+    label_file_path = dest_dir / img_dir.with_suffix(".txt").name
+
+    label_file_path.write_text(f"{class_id} 0.5 0.5 1 1\n")
 
 
 def split_dataset(src_dir, dest_dir, ratios=Ratio()):
@@ -98,6 +101,7 @@ def split_dataset(src_dir, dest_dir, ratios=Ratio()):
         segment_dir.mkdir(parents=True, exist_ok=True)
 
     class_names = [
+        "none",
         "drugs",
         "explicit",
         "gambling",
@@ -136,6 +140,9 @@ def split_dataset(src_dir, dest_dir, ratios=Ratio()):
                     destination_path = output_dir / file.name
                     logger.debug(f"{source_path} -> {destination_path}")
                     shutil.copy(source_path, destination_path)
+                    generate_label_file(
+                        source_path, output_dir, class_to_id[class_folder.name]
+                    )
 
 
 if __name__ == "__main__":
@@ -162,8 +169,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    source_dir = Path(args.source_dir)
-    destination_dir = Path(args.destination_dir)
+    source_dir = Path(args.source_dir).absolute()
+    destination_dir = Path(args.destination_dir).absolute()
 
     if args.verbose:
         logger.setLevel(logging.DEBUG)
