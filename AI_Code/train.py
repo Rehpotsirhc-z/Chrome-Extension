@@ -18,7 +18,15 @@ def train():
     os.makedirs("model", exist_ok=True)
 
     model = YOLO("yolov8n.pt")
-    model.train(data=dataset_config_path, epochs=50, batch=16, imgsz=640, device=device)
+    model.train(
+        data=dataset_config_path,
+        epochs=75,
+        batch=16,
+        imgsz=640,
+        # resume=True,
+        device=device,
+    )
+    # model.train(data=dataset_config_path, epochs=50, batch=16, imgsz=640, device=device)
 
     results = model.val(data=dataset_config_path, device=device)
     metrics = results.results_dict

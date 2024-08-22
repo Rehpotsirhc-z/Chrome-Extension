@@ -2,15 +2,14 @@ train: train
 val: validation
 test: test
 
-nc: 8
-names:
-  [
-    "none",
+nc: 6
+names: [
+    "background",
     "drugs",
     "explicit",
     "gambling",
     "games",
-    "monetary",
+    # "monetary",
     "profanity",
-    "social",
+    # "social",
   ]

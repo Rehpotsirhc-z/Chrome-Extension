@@ -1,14 +1,36 @@
+const seenImages = new Set();
+
 function extractImageLinks() {
-    console.log("imageasd");
     const images = document.querySelectorAll("img");
-    const imageLinks = [];
-    images.forEach((image) => {
-        imageLinks.push(image.src);
-    });
-    console.log(imageLinks);
-    return imageLinks;
+    const newImageLinks = Array.from(images)
+        .map((img) => img.src)
+        .filter((src) => !seenImages.has(src));
+
+    newImageLinks.forEach((src) => seenImages.add(src));
+
+    console.log(`${newImageLinks.length} new images`);
+    return newImageLinks;
 }
 
-chrome.runtime.sendMessage({
-    images: extractImageLinks(),
+function sendImages() {
+    const imageLinks = extractImageLinks();
+    try {
+        if (imageLinks.length > 0) {
+            chrome.runtime.sendMessage({ images: imageLinks });
+        }
+    } catch (error) {
+        console.error("Error sending images", error);
+    }
+}
+
+// Set up a MutationObserver to detect changes in the DOM
+const observer = new MutationObserver(() => {
+    sendImages();
 });
+
+observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+});
+
+document.addEventListener("DOMContentLoaded", sendImages);

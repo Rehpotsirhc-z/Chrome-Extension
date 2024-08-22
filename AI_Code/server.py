@@ -11,7 +11,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Load the model
-model_path = Path("model/model_v1.pt")
+model_path = Path("model/model_v8.pt")
 model = YOLO(model_path)
 
 
@@ -21,32 +21,29 @@ def saveImgToFile(img, path):
 
 @app.route("/predict", methods=["POST"])
 def predict():
-    if "file" not in request.files:
-        return jsonify({"error": "No file part"}), 400
+    if "image" not in request.files:
+        return jsonify({"error": "No image part"}), 400
 
-    file = request.files["file"]
+    file = request.files["image"]
 
     if file.filename == "":
-        return jsonify({"error": "No selected file"}), 400
+        return jsonify({"error": "No selected image"}), 400
 
     try:
         img = Image.open(BytesIO(file.read()))
-        results = model([img])
+        results = model(img)
         predictions = results[0].boxes
 
-        response = {"predictions": []}
-
-        for pred in predictions:
-            if float(pred.conf) < 0.5:
-                print((model.names[int(pred.cls)], float(pred.conf)))
-                continue
-
-            response["predictions"].append(
+        response = {
+            "predictions": [
                 {
                     "class": model.names[int(pred.cls)],
                     "confidence": float(pred.conf),
                 }
-            )
+                for pred in predictions
+                if float(pred.conf) >= 0.5
+            ]
+        }
 
         return jsonify(response), 200
 

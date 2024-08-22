@@ -101,21 +101,26 @@ def split_dataset(src_dir, dest_dir, ratios=Ratio()):
         segment_dir.mkdir(parents=True, exist_ok=True)
 
     class_names = [
-        "none",
+        "background",
         "drugs",
         "explicit",
         "gambling",
         "games",
-        "monetary",
+        # "monetary",
         "profanity",
-        "social",
+        # "social",
     ]
     class_to_id = {class_name: idx for idx, class_name in enumerate(class_names)}
+
+    img_extensions = [".jpg", ".jpeg", ".png", ".bmp", "webp", ".tiff", ".avif"]
 
     # Iterate over each class folder
     for class_folder in src_dir.iterdir():
         if class_folder.is_dir():
-            all_files = [f for f in class_folder.iterdir() if f.suffix == ".jpg"]
+            all_files = [
+                f for f in class_folder.iterdir() if f.suffix.lower() in img_extensions
+            ]
+            # all_files = [f for f in class_folder.iterdir() if f.suffix == ".jpg"]
             random.shuffle(all_files)
 
             train_num = int(len(all_files) * train_ratio)
