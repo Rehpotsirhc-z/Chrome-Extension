@@ -5,3 +5,6 @@ AI_Code/runs
 AI_Code/yolov8n.pt
 AI_Code/YOLOv8
 Text_AI/dataset
+Text_AI/model
+Server/output
+Server/models

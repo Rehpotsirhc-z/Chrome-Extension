@@ -1,0 +1,13 @@
+Flask
+Flask-Cors
+nltk
+numpy
+pandas
+pillow
+scikit-learn
+tokenizers
+torch
+torchvision
+transformers
+Werkzeug
+ultralytics

@@ -1,4 +1,6 @@
-url = "http://localhost:5000/predict";
+base_url = "http://localhost:5000";
+image_url = `${base_url}/predict_image`
+text_url = `${base_url}/predict_text`
 
 function dataUrlToBlob(dataUrl) {
     const [header, data] = dataUrl.split(",");
@@ -98,7 +100,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
                     const formData = new FormData();
                     formData.append("image", image);
 
-                    const response = await fetch(url, {
+                    const response = await fetch(image_url, {
                         method: "POST",
                         body: formData,
                     });
@@ -135,5 +137,56 @@ chrome.runtime.onMessage.addListener(async (request) => {
         Object.entries(categoryCount).forEach(([category, count]) => {
             console.log(`${category}: ${count}`);
         });
+    } else if (request.text) {
+        console.log(request.text.length, "text to process");
+        const categoryCount = {};
+
+        const predictionPromises = request.text.map(
+            async (text) => {
+                try {
+                    const formData = new FormData();
+                    formData.append("text", text);
+
+                    const response = await fetch(text_url, {
+                        method: "POST",
+                        body: formData,
+                    });
+
+                    const { predictions: [prediction] = [] } =
+                        await response.json();
+
+                    if (prediction) {
+                        const { class: className, confidence } = prediction;
+                        if (className !== "background") {
+                            console.log(
+                                `Text: ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
+                            );
+                        } 
+
+                        categoryCount[className] =
+                            (categoryCount[className] || 0) + 1;
+                    } else {
+                        console.log(
+                            `Text: ${text} | Prediction: background`,
+                        );
+                        categoryCount["background"] =
+                            (categoryCount["background"] || 0) + 1;
+                    }
+                } catch (error) {
+                    console.error(
+                        `Error getting predictions`,
+                        error,
+                    );
+                }
+            },
+        );
+
+        await Promise.all(predictionPromises);
+
+        console.log("Category counts:");
+        Object.entries(categoryCount).forEach(([category, count]) => {
+            console.log(`${category}: ${count}`);
+        });
+
     }
 });

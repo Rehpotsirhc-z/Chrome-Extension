@@ -82,7 +82,7 @@ def evaluate(model, data_loader):
     return accuracy, precision, recall, f1
 
 
-def train(train_dir, val_dir, model_dir, batch_size=16, epochs=5, learning_rate=1e-5):
+def train(train_dir, val_dir, model_dir, batch_size=16, epochs=100, learning_rate=1e-5):
     tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
     model = BertForSequenceClassification.from_pretrained(
         "bert-base-uncased", num_labels=8

@@ -23,9 +23,27 @@ function sendImages() {
     }
 }
 
+function extractSentences() {
+    const textContent = document.body.innerText;
+    const sentences = textContent.match(/[^.!?]*[.!?]/g) || [];
+    return sentences;
+}
+
+function sendText() {
+    const textLinks = extractSentences();
+    try {
+        if (textLinks.length > 0) {
+            chrome.runtime.sendMessage({ text: textLinks});
+        }
+    } catch (error) {
+        console.error("Error sending text", error);
+    }
+}
+
 // Set up a MutationObserver to detect changes in the DOM
 const observer = new MutationObserver(() => {
     sendImages();
+    sendText();
 });
 
 observer.observe(document.body, {
@@ -33,4 +51,7 @@ observer.observe(document.body, {
     subtree: true,
 });
 
-document.addEventListener("DOMContentLoaded", sendImages);
+document.addEventListener("DOMContentLoaded", () => {
+    sendImages();
+    sendText();
+});

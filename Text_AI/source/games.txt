@@ -1,42 +1,34 @@
-minecraft.
-fortnite.
-games.
-online games.
-first person shooter.
-multiplayer games.
-lets play.
-cookie clicker.
-AFK.
-FPS.
-rpg.
-fun game.
-among us.
-"slither.io"
-"gulper.io"
-powerline.
-runescape.
-geoguessr.
-driving game.
-goat simulator.
-clash royale.
-roblox.
-Play for free!.
-Raid Shadow Legends.
-biggest mobile role-playing games.
-users have joined Raid.
-most impressive games in its class with detailed models, environments and smooth 60 frames per second animations.
-champions in the game.
-customized with unique gear that changes your strategic buffs and abilities!.
-The dungeon bosses.
-ridiculous skills of their own.
-perfect party .
-strategy to overtake.
-Play Store.
-faction wars feature.
-squad.
-arena.
-daily login reward.
-50,000 silver.
-free epic champion.
-new player program.
-robux.
+invisible wall
+Crowd control
+minigame
+wall bang
+Also story mode and campaign.
+Repeated use of the jump button while moving, which increases the character's momentum in some games. Originally a glitch in Quake 1 based games, a large portion of games have implemented it as a feature and gamers have taken into doing this.
+Repeated use of the same item or action (e.g. chat message, combo, weapon). Often used generally to describe such repeated uses, but sometimes used pejoratively when the item or action is considered overpowered or annoying, such as an overreliance on rocket launchers in shooter games.
+Any enemy that appears to require more firepower than would be considered realistic or reasonable to defeat. This is an allusion to how the enemy can absorb bullets much like a sponge absorbs liquids. For example, an enemy soldier in a first-person shooter that requires several full magazines of ammunition to defeat, in comparison to other soldier types that are defeated in a handful of shots, would be a bullet sponge.
+invulnerability
+The automatic change in parameters, scenarios, and behaviors in a video game in real-time, based on the player's ability, with the aim of avoiding player boredom or frustration.
+When a game consists of multiple turns. When one player's turn is complete, they must wait until everyone else has finished their turn.
+VRR - An acronym for 'variable refresh rate', VRR is a technology that allows the refresh rate of the display panel to be matched to the frame-rate of the video input, improving visual clarity, particularly in situations where frame-rate is highly variable.
+A mechanism in a video game where progress to or from a saved game can be done by pressing a single controller button or keystroke, instead of opening a file dialog to locate the save file. Typically, there is only one quickload location and quicksaving will overwrite any previously saved state.
+A subgenre of puzzle video game where the player has to use the game's physics and environment to complete each puzzle. Notable examples include Portal, World of Goo and Cut the Rope, and projectile collision games such as Angry Birds and Peggle.
+A game environment divided into single-screen portions, similar to individual tiles in a maze. Players see only one such screen at a time, and they transfer between screens by moving the player-character to the current screen's edge. The picture then abruptly "flips" to the next screen, hence the technique's name. UK magazines also refer to this as flick-screen.
+A term used in many role-playing and strategy games to describe attacks or other effects that affect multiple targets within a specified area. For example, in the role-playing game, Dungeons & Dragons, a fireball spell will deal damage to anyone within a certain radius of where it strikes. In most tactical strategy games artillery weapons have an area of effect that will damage anyone within a radius of the strike zone. Often the effect is stronger on the target than on anything else hit. See also: Splash damage
+frag
+Playing the meta, at possible detriment to the story and/or enjoyment of the game. Colloquialism.
+cross-platform
+The losing screen shown when a loss condition is met.
+A location in a game. Also area, map, stage, dungeon. Several levels may be grouped into a world. Some games include special bonus stages or secret levels.
+A program, either provided within the game software or as separate software product, that allows players to place objects or create new levels for a video game.
+rocket jumping
+Friendly fire - refers to any situation in which players are vulnerable to attacks from their own allies (especially in multiplayer settings), or to describe the act of being attacked by an ally.
+specialization
+A 3D graphics process which determines if an object is visible and "clips" any obscured parts before drawing it. See also clipping (computer graphics).
+mudflation
+An abbreviation of 1 versus 1, denoting two players battling against each other. Can be extended to any player versus player grouping, such as '2v2' to mean two teams of two battling each other, or "1v4" to refer to a team of four players against one (as seen in asymmetrical gameplay).
+open world
+A spell or skill that is capable of dealing a large amount of damage to its target. Also in the context of video games, "nuking" may also describe the act of using a nuclear weapon while playing the game, such as the atomic bomb in Call of Duty games. In an MMORPG, nuking may differ in meaning between different communities. For example, to some individuals, to "nuke" is to deal the most possible damage to the most enemies possible (almost exclusively by means of an area of effect skill), whereas other individuals use the term by referring to the highest possible damage to a single target in the shortest amount of time, also known as a spike. Some individuals believe that the player, or players, nuking must do so by means of ranged combat (that is, out of melee range); others make no such distinction. It can also mean to critical hit often or just to deal high standard damage. In a real-time or turn-based strategy game, the term "nuke" has one distinct use. It can describe the tactic of attacking an opponent's specific (often high-priority) units with high-damage spells in order to kill them or force (or strongly encourage) the opposing player to remove them from battle. Such usage is common in Warcraft III, in which "Heroes" are frequently the targets and attackers due to their relative high priority and common faculty for high-damaging spells.
+Hit points have been a mainstay of the RPG genre for decades now, with long-running series like Final Fantasy keeping the concept largely unchanged since the mid-'80s.
+blacklist
+expansion pack (Add-on)
+To collect all collectibles within a game, either indicated within games as a percentage counter or determined by player community consensus.
