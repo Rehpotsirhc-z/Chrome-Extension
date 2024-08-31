@@ -1,6 +1,6 @@
 base_url = "http://localhost:5000";
-image_url = `${base_url}/predict_image`
-text_url = `${base_url}/predict_text`
+image_url = `${base_url}/predict_image`;
+text_url = `${base_url}/predict_text`;
 
 function dataUrlToBlob(dataUrl) {
     const [header, data] = dataUrl.split(",");
@@ -114,6 +114,33 @@ chrome.runtime.onMessage.addListener(async (request) => {
                             console.log(
                                 `URL: ${imageLink} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
                             );
+
+                            const categories = {
+                                profanity: "profanity",
+                                social: "social-media-and-forums",
+                                monetary: "monetary-transactions",
+                                explicit: "explicit-content",
+                                drugs: "drugs",
+                                gambling: "gambling",
+                            };
+
+                            Object.entries(categories).forEach(
+                                ([key, value]) => {
+                                    chrome.storage.local
+                                        .get([value])
+                                        .then((result) => {
+                                            if (
+                                                className === key &&
+                                                result[value]
+                                            ) {
+                                                console.log(
+                                                    "Category: ",
+                                                    value,
+                                                );
+                                            }
+                                        });
+                                },
+                            );
                         }
 
                         categoryCount[className] =
@@ -141,45 +168,38 @@ chrome.runtime.onMessage.addListener(async (request) => {
         console.log(request.text.length, "text to process");
         const categoryCount = {};
 
-        const predictionPromises = request.text.map(
-            async (text) => {
-                try {
-                    const formData = new FormData();
-                    formData.append("text", text);
+        const predictionPromises = request.text.map(async (text) => {
+            try {
+                const formData = new FormData();
+                formData.append("text", text);
 
-                    const response = await fetch(text_url, {
-                        method: "POST",
-                        body: formData,
-                    });
+                const response = await fetch(text_url, {
+                    method: "POST",
+                    body: formData,
+                });
 
-                    const { predictions: [prediction] = [] } =
-                        await response.json();
+                const prediction = await response.json();
 
-                    if (prediction) {
-                        const { class: className, confidence } = prediction;
-                        if (className !== "background") {
-                            console.log(
-                                `Text: ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-                            );
-                        } 
-
-                        categoryCount[className] =
-                            (categoryCount[className] || 0) + 1;
-                    } else {
+                if (prediction) {
+                    const { class: className, confidence } = prediction;
+                    if (className !== "background") {
                         console.log(
-                            `Text: ${text} | Prediction: background`,
+                            `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
                         );
-                        categoryCount["background"] =
-                            (categoryCount["background"] || 0) + 1;
                     }
-                } catch (error) {
-                    console.error(
-                        `Error getting predictions`,
-                        error,
-                    );
+
+                    categoryCount[className] =
+                        (categoryCount[className] || 0) + 1;
+                } else {
+                    // console.log(`Text: ${text} | Prediction: background`);
+                    categoryCount["background"] =
+                        (categoryCount["background"] || 0) + 1;
                 }
-            },
-        );
+            } catch (error) {
+                console.log(text);
+                console.error(`Error getting predictions`, error);
+            }
+        });
 
         await Promise.all(predictionPromises);
 
@@ -187,6 +207,5 @@ chrome.runtime.onMessage.addListener(async (request) => {
         Object.entries(categoryCount).forEach(([category, count]) => {
             console.log(`${category}: ${count}`);
         });
-
     }
 });

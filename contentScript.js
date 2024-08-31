@@ -2,6 +2,7 @@ const seenImages = new Set();
 
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
+
     const newImageLinks = Array.from(images)
         .map((img) => img.src)
         .filter((src) => !seenImages.has(src));
@@ -33,14 +34,14 @@ function sendText() {
     const textLinks = extractSentences();
     try {
         if (textLinks.length > 0) {
-            chrome.runtime.sendMessage({ text: textLinks});
+            chrome.runtime.sendMessage({ text: textLinks });
         }
     } catch (error) {
         console.error("Error sending text", error);
     }
 }
 
-// Set up a MutationObserver to detect changes in the DOM
+// Set up a MutationObserver to detect change in the DOM
 const observer = new MutationObserver(() => {
     sendImages();
     sendText();
@@ -49,6 +50,8 @@ const observer = new MutationObserver(() => {
 observer.observe(document.body, {
     childList: true,
     subtree: true,
+    attributes: true,
+    attributesFilter: ["src"],
 });
 
 document.addEventListener("DOMContentLoaded", () => {

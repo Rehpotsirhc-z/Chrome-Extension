@@ -17,13 +17,15 @@ document.addEventListener("DOMContentLoaded", () => {
     ].map((id) => document.getElementById(id));
 
     // PASSWORD AUTHENTICATION
-    if (localStorage.getItem("password")) {
-        showSection("password");
-        passwordInputField.focus();
-    } else {
-        showSection("setPassword");
-        setPasswordInputField.focus();
-    }
+    chrome.storage.local.get(["password"]).then((result) => {
+        if (result.password) {
+            showSection("password");
+            passwordInputField.focus();
+        } else {
+            showSection("setPassword");
+            setPasswordInputField.focus();
+        }
+    });
 
     // PASSWORD MANAGEMENT
     // Submit password when button is clicked or Enter is pressed
@@ -46,17 +48,18 @@ document.addEventListener("DOMContentLoaded", () => {
 // FUNCTIONS
 // Submit the password
 function submitPassword() {
-    const password = localStorage.getItem("password");
     const attemptedPassword = document.getElementById("password-field").value;
 
-    if (password === attemptedPassword) {
-        localStorage.setItem("authenticated", "true");
-        window.location.href = "settings.html";
-    } else {
-        document
-            .getElementById("incorrect-password-message")
-            .classList.add("active");
-    }
+    chrome.storage.local.get(["password"], (result) => {
+        if (result.password === attemptedPassword) {
+            chrome.storage.local.set({ authenticated: true });
+            window.location.href = "settings.html";
+        } else {
+            document
+                .getElementById("incorrect-password-message")
+                .classList.add("active");
+        }
+    });
 }
 
 // Set the new password
@@ -67,7 +70,7 @@ function setPassword() {
     ).value;
 
     if (password && password === confirmPassword) {
-        localStorage.setItem("password", password);
+        chrome.storage.local.set({ password });
         showSection("password");
     } else {
         alert(password ? "Passwords do not match" : "Password cannot be empty");

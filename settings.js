@@ -14,8 +14,10 @@ const customCheckboxes = blockingCategories.map((c) => `${c}-checkbox`);
 // PAGE LOAD
 document.addEventListener("DOMContentLoaded", () => {
     // CHECK AUTHENTICATION
-    const authenticated = localStorage.getItem("authenticated") === "true";
-    if (!authenticated) window.location.href = "barrier.html";
+
+    chrome.storage.local.get(["authenticated"]).then((result) => {
+        if (!result.authenticated) window.location.href = "barrier.html";
+    });
 
     // VARIABLES
     const [
@@ -36,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
         "confirm-new-password-field",
     ].map((id) => document.getElementById(id));
 
-    // Make checkboxes change localStorage values
+    // Make checkboxes change storage values
     customCheckboxes.forEach((checkbox) => {
         document.getElementById(checkbox).addEventListener("click", (event) => {
             toggleRestriction(event.target.value);
@@ -82,14 +84,16 @@ document.addEventListener("DOMContentLoaded", () => {
         const preset = document.getElementById(`${age}-preset`);
 
         // Check radio button based on saved value
-        if (localStorage.getItem(age) === "true") radioButton.checked = true;
+        chrome.storage.local.get([age]).then((result) => {
+            if (result[age] === true) radioButton.checked = true;
+        });
 
-        // Save the selected preset to localStorage on radio button selection
+        // Save the selected preset to storage on radio button selection
         radioButton.addEventListener("change", (event) => {
             if (event.target.checked) {
                 clearRadioButtons();
                 applyRestrictions(age);
-                localStorage.setItem(age, "true");
+                chrome.storage.local.set({ [age]: true });
             }
         });
 
@@ -104,10 +108,12 @@ document.addEventListener("DOMContentLoaded", () => {
     // LOGOUT & CHANGE PASSWORD
     // Make logout button log the user out
     logoutButton.addEventListener("click", () => {
-        if (localStorage.getItem("authenticated") === "true") {
-            localStorage.setItem("authenticated", "false");
-            window.location.href = "barrier.html";
-        }
+        chrome.storage.local.get(["authenticated"]).then((result) => {
+            if (result.authenticated) {
+                chrome.storage.local.set({ authenticated: false });
+                window.location.href = "barrier.html";
+            }
+        });
     });
 
     // Show the change password prompt when the button is clicked
@@ -192,10 +198,11 @@ function openTab(event, tabName) {
     event.currentTarget.classList.add("active");
 }
 
-// Toggle the value of a restriction in localStorage
-function toggleRestriction(value) {
-    const isChecked = localStorage.getItem(value) === "true";
-    localStorage.setItem(value, !isChecked); // Toggle value (it will automatically convert to string)
+// Toggle the value of a restriction in storage
+function toggleRestriction(key) {
+    chrome.storage.local.get([key]).then((result) => {
+        chrome.storage.local.set({ [key]: !result[key] });
+    });
 }
 
 // Save restrictions based on the selected preset and update checkboxes to match
@@ -225,20 +232,20 @@ function applyRestrictions(id) {
 
     if (presetRestrictions) {
         clearRestrictions();
-        presetRestrictions.forEach((restriction) =>
-            localStorage.setItem(restriction, "true"),
-        );
+        presetRestrictions.forEach((restriction) => {
+            chrome.storage.local.set({ [restriction]: true });
+        });
     }
     // Otherwise assumed to be custom
 
     setCheckboxes();
 }
 
-// Clear all restrictions in localStorage
+// Clear all restrictions in storage
 function clearRestrictions() {
-    blockingCategories.forEach((restriction) =>
-        localStorage.setItem(restriction, "false"),
-    );
+    blockingCategories.forEach((restriction) => {
+        chrome.storage.local.set({ [restriction]: false });
+    });
 }
 
 // Expand or collapse the section corresponding to the clicked button
@@ -258,18 +265,20 @@ function toggleExpandButton(event, age) {
     }
 }
 
-// Clear all preset selections in localStorage
+// Clear all preset selections in storage
 function clearRadioButtons() {
     ages.forEach((radioButton) => {
-        localStorage.setItem(radioButton, "false");
+        chrome.storage.local.set({ [radioButton]: false });
     });
 }
 
-// Set checkboxes to match localStorage values
+// Set checkboxes to match storage values
 function setCheckboxes() {
     blockingCategories.forEach((age) => {
-        const isChecked = localStorage.getItem(age) === "true";
-        document.getElementById(`${age}-checkbox`).checked = isChecked;
+        chrome.storage.local.get([age]).then((result) => {
+            console.log(result[age]);
+            document.getElementById(`${age}-checkbox`).checked = result[age];
+        });
     });
 }
 
@@ -281,10 +290,10 @@ function submitPassword() {
         "confirm-new-password-field",
     ].map((id) => document.getElementById(id).value);
 
-    const storedPassword = localStorage.getItem("password");
-
-    if (oldPassword !== localStorage.getItem("password"))
-        return alert("Incorrect password. Please try again.");
+    chrome.storage.local.get(["password"]).then((result) => {
+        if (oldPassword !== result.password)
+            return alert("Incorrect password. Please try again.");
+    });
 
     if (!newPassword)
         return alert("New password cannot be empty. Please try again.");
@@ -292,7 +301,7 @@ function submitPassword() {
     if (newPassword !== newPasswordConfirmation)
         return alert("New passwords do not match. Please try again.");
 
-    localStorage.setItem("password", newPassword);
-    localStorage.setItem("authenticated", "false");
+    chrome.storage.local.set({ password: newPassword });
+    chrome.storage.local.set({ authenticated: false });
     window.location.href = "barrier.html";
 }
