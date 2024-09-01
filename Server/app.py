@@ -12,7 +12,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Load the model
-image_model_path = Path("models/image/model_v8.pt")
+image_model_path = Path("models/image/model_v9.pt")
 img_model = YOLO(image_model_path)
 
 tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")

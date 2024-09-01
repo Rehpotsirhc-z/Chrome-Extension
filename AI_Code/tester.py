@@ -28,7 +28,7 @@ def process_image(image_path, model):
 
 
 def main(image_paths):
-    model_path = Path("model/model_v8.pt")
+    model_path = Path("model/model_v9.pt")
     model = YOLO(model_path)
 
     for image_path in image_paths:

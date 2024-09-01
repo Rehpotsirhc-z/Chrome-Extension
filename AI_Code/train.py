@@ -20,7 +20,7 @@ def train():
     model = YOLO("yolov8n.pt")
     model.train(
         data=dataset_config_path,
-        epochs=300,
+        epochs=75,
         batch=16,
         imgsz=640,
         # resume=True,
