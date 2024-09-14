@@ -4,10 +4,21 @@ function extractImageLinks() {
     const images = document.querySelectorAll("img");
 
     const newImageLinks = Array.from(images)
-        .map((img) => img.src)
-        .filter((src) => !seenImages.has(src));
+        .filter((img) => !seenImages.has(img.src))
+        .map((img) => {
+            img.dataset.originalSrc = img.src;
+            if (img.srcset !== "") {
+                img.dataset.originalSrcset = img.srcset;
+                img.srcset = "";
+            }
+            img.src = "";
+            img.alt = "";
 
-    newImageLinks.forEach((src) => seenImages.add(src));
+            seenImages.add(img.src);
+            return img.dataset.originalSrc;
+        });
+
+    // newImageLinks.forEach((src) => seenImages.add(src));
 
     console.log(`${newImageLinks.length} new images`);
     return newImageLinks;
@@ -50,11 +61,51 @@ const observer = new MutationObserver(() => {
 observer.observe(document.body, {
     childList: true,
     subtree: true,
-    attributes: true,
-    attributesFilter: ["src"],
+    //     // attributes: true,
+    //     // attributesFilter: ["src"],
 });
 
-document.addEventListener("DOMContentLoaded", () => {
+chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
+    if (message.action === "removeImage" && message.imageLink) {
+        console.log("Removing image", message.imageLink);
+
+        const images = document.querySelectorAll(
+            `img[src="${message.imageLink}"]`,
+        );
+        images.forEach((image) => {
+            if (image.srcset !== "") {
+                image.srcset = "";
+                image.removeAttribute("data-original-srcset");
+            }
+            image.removeAttribute("data-original-src");
+            image.src = "";
+            image.alt = "";
+        });
+    } else if (message.action === "revealImage" && message.imageLink) {
+        console.log("Revealing image", message.imageLink);
+
+        const images = document.querySelectorAll(
+            `img[src=""], img[data-original-src="${message.imageLink}"]`,
+        );
+        images.forEach((image) => {
+            image.src = image.dataset.originalSrc;
+            if (image.srcset) {
+                image.srcset = image.dataset.originalSrcset;
+            }
+            image.removeAttribute("data-original-src");
+            image.removeAttribute("data-original-srcset");
+        });
+    }
+});
+
+window.addEventListener("load", () => {
     sendImages();
     sendText();
 });
+
+// document.addEventListener("DOMContentLoaded", () => {
+//     sendImages();
+//     sendText();
+// });
+
+sendImages();

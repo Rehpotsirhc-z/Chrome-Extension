@@ -49,12 +49,13 @@ async function downloadImage(url) {
         // Create an ImageBitmap to access image dimensions
         const img = await createImageBitmap(blob);
 
-        if (img.width < 32 || img.height < 32) {
-            // console.log(
-            //     `Skipping image from URL: "${url}" | Dimensions: ${img.width}x${img.height}`,
-            // );
-            return null;
-        }
+        // TODO
+        // if (img.width < 32 || img.height < 32) {
+        //     // console.log(
+        //     //     `Skipping image from URL: "${url}" | Dimensions: ${img.width}x${img.height}`,
+        //     // );
+        //     return null;
+        // }
 
         // // Create an offscreen canvas to process the image
         // const canvas = new OffscreenCanvas(img.width, img.height);
@@ -121,6 +122,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                 monetary: "monetary-transactions",
                                 explicit: "explicit-content",
                                 drugs: "drugs",
+                                games: "web-based-games",
                                 gambling: "gambling",
                             };
 
@@ -129,6 +131,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                     chrome.storage.local
                                         .get([value])
                                         .then((result) => {
+                                            // console.log("is this running", value, result[value], className);
                                             if (
                                                 className === key &&
                                                 result[value]
@@ -137,6 +140,56 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                                     "Category: ",
                                                     value,
                                                 );
+
+                                                chrome.tabs.query(
+                                                    {},
+                                                    (tabs) => {
+                                                        tabs.forEach((tab) => {
+                                                            chrome.tabs
+                                                                .sendMessage(
+                                                                    tab.id,
+                                                                    {
+                                                                        action: "removeImage",
+                                                                        imageLink,
+                                                                    },
+                                                                )
+                                                                .catch(
+                                                                    (error) => {
+                                                                        console.error(
+                                                                            `Error removing image from URL (${imageLink}):`,
+                                                                            error,
+                                                                        );
+                                                                    },
+                                                                );
+                                                        });
+                                                    },
+                                                );
+                                                // chrome.runtime.sendMessage({ action: "removeImage", imageLink: imageLink });
+                                            } else {
+                                                chrome.tabs.query(
+                                                    {},
+                                                    (tabs) => {
+                                                        tabs.forEach((tab) => {
+                                                            chrome.tabs
+                                                                .sendMessage(
+                                                                    tab.id,
+                                                                    {
+                                                                        action: "revealImage",
+                                                                        imageLink,
+                                                                    },
+                                                                )
+                                                                .catch(
+                                                                    (error) => {
+                                                                        console.error(
+                                                                            `Error revealing image from URL (${imageLink}):`,
+                                                                            error,
+                                                                        );
+                                                                    },
+                                                                );
+                                                        });
+                                                    },
+                                                );
+                                                // chrome.runtime.sendMessage({ action: "revealImage", imageLink: imageLink });
                                             }
                                         });
                                 },
@@ -183,9 +236,9 @@ chrome.runtime.onMessage.addListener(async (request) => {
                 if (prediction) {
                     const { class: className, confidence } = prediction;
                     if (className !== "background") {
-                        console.log(
-                            `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-                        );
+                        // console.log(
+                        //     `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
+                        // );
                     }
 
                     categoryCount[className] =
