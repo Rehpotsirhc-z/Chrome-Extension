@@ -1,7 +1,7 @@
 import os
 from pathlib import Path
 from flask import Flask, request, jsonify
-from transformers import BertTokenizer, BertForSequenceClassification
+from transformers import BertTokenizer, BertForSequenceClassification, BertTokenizerFast
 from flask_cors import CORS
 from ultralytics import YOLO
 import torch
@@ -15,7 +15,7 @@ CORS(app)
 image_model_path = Path("models/image/model_v9.pt")
 img_model = YOLO(image_model_path)
 
-tokenizer = BertTokenizer.from_pretrained("bert-base-uncased")
+tokenizer = BertTokenizerFast.from_pretrained("bert-base-uncased")
 text_model = BertForSequenceClassification.from_pretrained(
     "bert-base-uncased", num_labels=8
 )

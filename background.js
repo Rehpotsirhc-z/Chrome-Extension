@@ -194,11 +194,43 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                         });
                                 },
                             );
+                        } else {
+                            chrome.tabs.query({}, (tabs) => {
+                                tabs.forEach((tab) => {
+                                    chrome.tabs
+                                        .sendMessage(tab.id, {
+                                            action: "revealImage",
+                                            imageLink,
+                                        })
+                                        .catch((error) => {
+                                            console.error(
+                                                `Error revealing image from URL (${imageLink}):`,
+                                                error,
+                                            );
+                                        });
+                                });
+                            });
                         }
 
                         categoryCount[className] =
                             (categoryCount[className] || 0) + 1;
                     } else {
+                        chrome.tabs.query({}, (tabs) => {
+                            tabs.forEach((tab) => {
+                                chrome.tabs
+                                    .sendMessage(tab.id, {
+                                        action: "revealImage",
+                                        imageLink,
+                                    })
+                                    .catch((error) => {
+                                        console.error(
+                                            `Error revealing image from URL (${imageLink}):`,
+                                            error,
+                                        );
+                                    });
+                            });
+                        });
+
                         categoryCount["background"] =
                             (categoryCount["background"] || 0) + 1;
                     }
@@ -223,6 +255,10 @@ chrome.runtime.onMessage.addListener(async (request) => {
 
         const predictionPromises = request.text.map(async (text) => {
             try {
+                if (text.trim().length === 0) {
+                    return;
+                }
+
                 const formData = new FormData();
                 formData.append("text", text);
 
@@ -236,15 +272,49 @@ chrome.runtime.onMessage.addListener(async (request) => {
                 if (prediction) {
                     const { class: className, confidence } = prediction;
                     if (className !== "background") {
-                        // console.log(
-                        //     `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
-                        // );
-                    }
+                        console.log(
+                            `Text ${text} | Prediction: ${className} (${(confidence * 100).toFixed(2)}%)`,
+                        );
+                        const categories = {
+                            profanity: "profanity",
+                            social: "social-media-and-forums",
+                            monetary: "monetary-transactions",
+                            explicit: "explicit-content",
+                            drugs: "drugs",
+                            games: "web-based-games",
+                            gambling: "gambling",
+                        };
 
-                    categoryCount[className] =
-                        (categoryCount[className] || 0) + 1;
+                        Object.entries(categories).forEach(([key, value]) => {
+                            chrome.storage.local.get([value]).then((result) => {
+                                // console.log("is this running", value, result[value], className);
+                                if (className === key && result[value]) {
+                                    console.log("Category: ", value);
+
+                                    chrome.tabs.query({}, (tabs) => {
+                                        tabs.forEach((tab) => {
+                                            chrome.tabs
+                                                .sendMessage(tab.id, {
+                                                    action: "removeText",
+                                                    text,
+                                                })
+                                                .catch((error) => {
+                                                    console.error(
+                                                        `Error removing text (${text}):`,
+                                                        error,
+                                                    );
+                                                });
+                                        });
+                                    });
+                                }
+                            });
+                        });
+
+                        categoryCount[className] =
+                            (categoryCount[className] || 0) + 1;
+                    }
                 } else {
-                    // console.log(`Text: ${text} | Prediction: background`);
+                    console.log(`Text: ${text} | Prediction: background`);
                     categoryCount["background"] =
                         (categoryCount["background"] || 0) + 1;
                 }
