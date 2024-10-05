@@ -77,6 +77,23 @@ async function downloadImage(url) {
     }
 }
 
+function recordCategory(category) {
+    chrome.storage.local.get([category]).then((result) => {
+        let currentTime = new Date().getTime();
+        let log = Array.from(result[category] || []).filter(
+            (time) => time > thirtyDaysAgo(),
+        );
+        console.log("Log: ", result);
+        chrome.storage.local.set({ [category]: [...log, currentTime] });
+    });
+}
+
+function thirtyDaysAgo() {
+    let currentDate = new Date().getTime();
+    let thirtyDays = 30 * 24 * 60 * 60 * 1000;
+    return currentDate - thirtyDays;
+}
+
 chrome.runtime.onMessage.addListener(async (request) => {
     if (request.images) {
         console.log(request.images.length, "images to process");
@@ -131,7 +148,6 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                     chrome.storage.local
                                         .get([value])
                                         .then((result) => {
-                                            // console.log("is this running", value, result[value], className);
                                             if (
                                                 className === key &&
                                                 result[value]
@@ -140,6 +156,8 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                                     "Category: ",
                                                     value,
                                                 );
+
+                                                recordCategory(value);
 
                                                 chrome.tabs.query(
                                                     {},
@@ -165,7 +183,12 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                                     },
                                                 );
                                                 // chrome.runtime.sendMessage({ action: "removeImage", imageLink: imageLink });
-                                            } else {
+                                            } else if (
+                                                className === key &&
+                                                !result[value]
+                                            ) {
+                                                recordCategory("background");
+
                                                 chrome.tabs.query(
                                                     {},
                                                     (tabs) => {
@@ -195,6 +218,8 @@ chrome.runtime.onMessage.addListener(async (request) => {
                                 },
                             );
                         } else {
+                            recordCategory("background");
+
                             chrome.tabs.query({}, (tabs) => {
                                 tabs.forEach((tab) => {
                                     chrome.tabs

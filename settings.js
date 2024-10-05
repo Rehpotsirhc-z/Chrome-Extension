@@ -138,35 +138,117 @@ document.addEventListener("DOMContentLoaded", () => {
         e.key === "Enter" && submitPassword();
     });
 
-    // TODO STATISTICS LOGIC
-    const ctx = document.getElementById("myChart").getContext("2d");
-    const myChart = new Chart(ctx, {
-        type: "pie",
-        date: {
-            labels: ["Red", "Blue", "Yellow", "Green", "Purple", "Orange"],
+    const categories = {
+        profanity: "profanity",
+        social: "social-media-and-forums",
+        monetary: "monetary-transactions",
+        explicit: "explicit-content",
+        drugs: "drugs",
+        games: "web-based-games",
+        gambling: "gambling",
+    };
+
+    const categoryLog = {};
+
+    Promise.all(
+        Object.entries(categories).map(([key, value]) => {
+            return chrome.storage.local.get([value]).then((result) => {
+                categoryLog[key] = result[value];
+            });
+        }),
+    ).then(() => {
+        console.log(Object.keys(categoryLog));
+        console.log(Object.values(categoryLog));
+        // TODO STATISTICS LOGIC
+        const ctx = document
+            .getElementById("time-per-category")
+            .getContext("2d");
+        const myChart = new Chart(ctx, {
+            type: "pie",
+            data: {
+                labels: Object.keys(categoryLog),
+                datasets: [
+                    {
+                        label: "Time Spent on Category",
+                        data: Object.values(categoryLog).map(
+                            (value) => value.length,
+                        ),
+                        backgroundColor: [
+                            "rgba(255, 99, 132, 1)", // Red
+                            "rgba(54, 162, 235, 1)", // Blue
+                            "rgba(255, 206, 86, 1)", // Yellow
+                            "rgba(75, 192, 192, 1)", // Green
+                            "rgba(153, 102, 255, 1)", // Purple
+                            "rgba(255, 159, 64, 1)", // Orange
+                            "rgba(25, 159, 64, 1)", // Orange
+                        ],
+                        borderColor: [
+                            "rgba(255, 99, 132, 1)", // Red
+                            "rgba(54, 162, 235, 1)", // Blue
+                            "rgba(255, 206, 86, 1)", // Yellow
+                            "rgba(75, 192, 192, 1)", // Green
+                            "rgba(153, 102, 255, 1)", // Purple
+                            "rgba(255, 159, 64, 1)", // Orange
+                            "rgba(25, 159, 64, 1)", // Orange
+                        ],
+                        borderWidth: 1,
+                    },
+                ],
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+                responsive: false,
+            },
+        });
+    });
+
+    function generateTimeLabels() {
+        let labels = [];
+        let hours = 0;
+        let minutes = 0;
+        while (hours < 24) {
+            while (minutes < 60) {
+                labels.push(
+                    `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`,
+                );
+                minutes += 5;
+            }
+            hours++;
+            minutes = 0;
+        }
+
+        return labels;
+    }
+
+    fiveMinutesLabels = generateTimeLabels();
+
+    // line chart
+    const ctx2 = document.getElementById("page-per-5-minutes").getContext("2d");
+    const myChart2 = new Chart(ctx2, {
+        type: "line",
+        data: {
+            labels: fiveMinutesLabels,
             datasets: [
                 {
-                    label: "# of Votes",
-                    data: [12, 19, 3, 5, 2, 3],
-                    backgroundColor: [
-                        "rgba(255, 99, 132, 0.2)", // Red
-                        "rgba(54, 162, 235, 0.2)", // Blue
-                        "rgba(255, 206, 86, 0.2)", // Yellow
-                        "rgba(75, 192, 192, 0.2)", // Green
-                        "rgba(153, 102, 255, 0.2)", // Purple
-                        "rgba(255, 159, 64, 0.2)", // Orange
-                    ],
-                    borderColor: [
-                        "rgba(255, 99, 132, 1)", // Red
-                        "rgba(54, 162, 235, 1)", // Blue
-                        "rgba(255, 206, 86, 1)", // Yellow
-                        "rgba(75, 192, 192, 1)", // Green
-                        "rgba(153, 102, 255, 1)", // Purple
-                        "rgba(255, 159, 64, 1)", // Orange
-                    ],
+                    label: "Time Spent on Category",
+                    data: [12, 19, 3, 5, 2, 3, 10],
+                    backgroundColor: "rgba(255, 99, 132, 0.2)",
+                    borderColor: "rgba(255, 99, 132, 1)",
                     borderWidth: 1,
                 },
             ],
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true,
+                },
+            },
+            responsive: false,
         },
     });
 });
