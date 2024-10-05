@@ -1,4 +1,4 @@
-// const seenImages = new Set();
+const seenImages = new Set();
 
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
@@ -24,11 +24,11 @@ function extractImageLinks() {
             img.alt = "";
 
             return img.dataset.originalSrc;
-        });
-    // .filter((src) => !seenImages.has(src)); // We do this after so that they still disappear if not approved
+        })
+        .filter((src) => !seenImages.has(src)); // We do this after so that they still disappear if not approved
 
-    // newImageLinks.forEach((src) => seenImages.add(src));
-    //
+    newImageLinks.forEach((src) => seenImages.add(src));
+
     // Extract images from CSS background images
     const backgroundImages = Array.from(document.querySelectorAll("*"));
 
