@@ -1,4 +1,5 @@
 const seenImages = new Set();
+const seenText = new Set();
 
 function extractImageLinks() {
     const images = document.querySelectorAll("img");
@@ -86,11 +87,20 @@ function extractSentences() {
     }
 
     extractTextFromNode(document.body);
+
+    // remove duplicates, empty strings, whitespace, and seen text
+    sentences = sentences
+        .filter((sentence) => sentence.trim() !== "")
+        .filter((sentence) => !seenText.has(sentence))
+        .map((sentence) => sentence.trim());
+
     return sentences;
 }
 
 function sendText() {
     const textLinks = extractSentences();
+    seenText.add(...textLinks);
+
     console.log(textLinks);
     try {
         if (textLinks.length > 0) {
@@ -107,12 +117,12 @@ const observer = new MutationObserver(() => {
     sendText();
 });
 
-observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-    //     // attributes: true,
-    //     // attributesFilter: ["src"],
-});
+// observer.observe(document.body, {
+//     childList: true,
+//     subtree: true,
+//     //     // attributes: true,
+//     //     // attributesFilter: ["src"],
+// });
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message.action === "removeImage" && message.imageLink) {

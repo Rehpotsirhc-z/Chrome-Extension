@@ -313,7 +313,7 @@ chrome.runtime.onMessage.addListener(async (request) => {
                         Object.entries(categories).forEach(([key, value]) => {
                             chrome.storage.local.get([value]).then((result) => {
                                 // console.log("is this running", value, result[value], className);
-                                if (className === key && result[value]) {
+                                if (className === key && result[value] && confidence > 0.5) {
                                     console.log("Category: ", value);
 
                                     chrome.tabs.query({}, (tabs) => {

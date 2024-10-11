@@ -206,50 +206,96 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    function generateTimeLabels() {
-        let labels = [];
-        let hours = 0;
-        let minutes = 0;
-        while (hours < 24) {
-            while (minutes < 60) {
-                labels.push(
-                    `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`,
-                );
-                minutes += 5;
-            }
-            hours++;
-            minutes = 0;
-        }
+    const eventLog = [];
 
-        return labels;
+    function isWithin5Minutes(timestamp, targetTimestamp){
+        let time = new Date(timestamp);
+        let endTime = new Date(time.getTime() + 5*60000).getTime();
+        return endTime >= targetTimestamp;
     }
 
-    fiveMinutesLabels = generateTimeLabels();
+    Promise.all(
+        [...Object.entries(categories), ["background", "background"]].map(([key, value]) => {
+            return chrome.storage.local.get([value]).then((result) => {
+                eventLog.push(...result[value]);
+            });
+        }),
+    ).then(() => {
+        console.log(eventLog);
+        function generateTimeLabels() {
+            let labels = [];
+            let hours = 0;
+            let minutes = 0;
+            while (hours < 24) {
+                while (minutes < 60) {
+                    labels.push(
+                        `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`,
+                    );
+                    minutes += 5;
+                }
+                hours++;
+                minutes = 0;
+            }
 
-    // line chart
-    const ctx2 = document.getElementById("page-per-5-minutes").getContext("2d");
-    const myChart2 = new Chart(ctx2, {
-        type: "line",
-        data: {
-            labels: fiveMinutesLabels,
-            datasets: [
-                {
-                    label: "Time Spent on Category",
-                    data: [12, 19, 3, 5, 2, 3, 10],
-                    backgroundColor: "rgba(255, 99, 132, 0.2)",
-                    borderColor: "rgba(255, 99, 132, 1)",
-                    borderWidth: 1,
-                },
-            ],
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
+            return labels;
+        }
+
+        fiveMinutesLabels = generateTimeLabels();
+
+        let time = new Date();
+        time.setHours(0, 0, 0, 0);
+
+        let today = eventLog.filter(timestamp => timestamp >= time && timestamp < time.getTime() + 24*60*60000);
+
+        console.log("today", today);
+
+function getFiveMinuteIntervals(){
+    let today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    let interval = 5*60000;
+
+    let result = [];
+
+    for(let i = 0; i < 288; i++){
+        result.push(today.getTime() + i*interval);
+    }
+
+    return result
+}
+
+console.log("intervals", getFiveMinuteIntervals());
+
+let todayIntervals = [];
+getFiveMinuteIntervals().forEach(interval => {todayIntervals.push(today.filter(timestamp => timestamp >= interval && timestamp < interval + 5*60000))})
+console.log(todayIntervals.map(interval => interval.length));
+
+        // line chart
+        const ctx2 = document.getElementById("page-per-5-minutes").getContext("2d");
+        const myChart2 = new Chart(ctx2, {
+            type: "line",
+            data: {
+                labels: fiveMinutesLabels,
+                datasets: [
+                    {
+                        label: "Number of Events",
+                        // data: [12, 19, 3, 5, 2, 3, 10],
+                        data: todayIntervals.map(interval => interval.length),
+                        backgroundColor: "rgba(255, 99, 132, 0.2)",
+                        borderColor: "rgba(255, 99, 132, 1)",
+                        borderWidth: 1,
+                    },
+                ],
             },
-            responsive: false,
-        },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                    },
+                },
+                responsive: false,
+            },
+        });
     });
 });
 
