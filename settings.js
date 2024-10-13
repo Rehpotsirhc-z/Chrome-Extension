@@ -208,18 +208,25 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const eventLog = [];
 
-    function isWithin5Minutes(timestamp, targetTimestamp){
+    function isWithin5Minutes(timestamp, targetTimestamp) {
         let time = new Date(timestamp);
-        let endTime = new Date(time.getTime() + 5*60000).getTime();
+        let endTime = new Date(time.getTime() + 5 * 60000).getTime();
         return endTime >= targetTimestamp;
     }
 
     Promise.all(
-        [...Object.entries(categories), ["background", "background"]].map(([key, value]) => {
-            return chrome.storage.local.get([value]).then((result) => {
-                eventLog.push(...result[value]);
-            });
-        }),
+        [...Object.entries(categories), ["background", "background"]].map(
+            ([key, value]) => {
+                return chrome.storage.local.get([value]).then((result) => {
+                    // TODO: Figure out the problem
+                    try {
+                        eventLog.push(...result[value]);
+                    } catch (e) {
+                        console.log(e);
+                    }
+                });
+            },
+        ),
     ).then(() => {
         console.log(eventLog);
         function generateTimeLabels() {
@@ -245,33 +252,47 @@ document.addEventListener("DOMContentLoaded", () => {
         let time = new Date();
         time.setHours(0, 0, 0, 0);
 
-        let today = eventLog.filter(timestamp => timestamp >= time && timestamp < time.getTime() + 24*60*60000);
+        let today = eventLog.filter(
+            (timestamp) =>
+                timestamp >= time &&
+                timestamp < time.getTime() + 24 * 60 * 60000,
+        );
 
         console.log("today", today);
 
-function getFiveMinuteIntervals(){
-    let today = new Date();
-    today.setHours(0, 0, 0, 0);
+        function getFiveMinuteIntervals() {
+            let today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-    let interval = 5*60000;
+            let interval = 5 * 60000;
 
-    let result = [];
+            let result = [];
 
-    for(let i = 0; i < 288; i++){
-        result.push(today.getTime() + i*interval);
-    }
+            for (let i = 0; i < 288; i++) {
+                result.push(today.getTime() + i * interval);
+            }
 
-    return result
-}
+            return result;
+        }
 
-console.log("intervals", getFiveMinuteIntervals());
+        console.log("intervals", getFiveMinuteIntervals());
 
-let todayIntervals = [];
-getFiveMinuteIntervals().forEach(interval => {todayIntervals.push(today.filter(timestamp => timestamp >= interval && timestamp < interval + 5*60000))})
-console.log(todayIntervals.map(interval => interval.length));
+        let todayIntervals = [];
+        getFiveMinuteIntervals().forEach((interval) => {
+            todayIntervals.push(
+                today.filter(
+                    (timestamp) =>
+                        timestamp >= interval &&
+                        timestamp < interval + 5 * 60000,
+                ),
+            );
+        });
+        console.log(todayIntervals.map((interval) => interval.length));
 
         // line chart
-        const ctx2 = document.getElementById("page-per-5-minutes").getContext("2d");
+        const ctx2 = document
+            .getElementById("page-per-5-minutes")
+            .getContext("2d");
         const myChart2 = new Chart(ctx2, {
             type: "line",
             data: {
@@ -280,7 +301,7 @@ console.log(todayIntervals.map(interval => interval.length));
                     {
                         label: "Number of Events",
                         // data: [12, 19, 3, 5, 2, 3, 10],
-                        data: todayIntervals.map(interval => interval.length),
+                        data: todayIntervals.map((interval) => interval.length),
                         backgroundColor: "rgba(255, 99, 132, 0.2)",
                         borderColor: "rgba(255, 99, 132, 1)",
                         borderWidth: 1,
