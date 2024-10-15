@@ -260,25 +260,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
         console.log("today", today);
 
-        function getFiveMinuteIntervals() {
-            let today = new Date();
-            today.setHours(0, 0, 0, 0);
+        let date = new Date();
+        date.setHours(0, 0, 0, 0);
 
+        let prevButton = document.getElementById("prev-day-button");
+        let nextButton = document.getElementById("next-day-button");
+        let dateLabel = document.getElementById("current-date-statistics");
+        dateLabel.textContent = date.toDateString();
+
+        prevButton.addEventListener("click", () => {
+            date.setDate(date.getDate() - 1);
+            dateLabel.textContent = date.toDateString();
+        });
+
+        nextButton.addEventListener("click", () => {
+            date.setDate(date.getDate() + 1);
+            dateLabel.textContent = date.toDateString();
+        });
+
+        function getFiveMinuteIntervals(date) {
             let interval = 5 * 60000;
 
             let result = [];
 
             for (let i = 0; i < 288; i++) {
-                result.push(today.getTime() + i * interval);
+                result.push(date.getTime() + i * interval);
             }
 
             return result;
         }
 
-        console.log("intervals", getFiveMinuteIntervals());
+        console.log("intervals", getFiveMinuteIntervals(date));
 
         let todayIntervals = [];
-        getFiveMinuteIntervals().forEach((interval) => {
+        getFiveMinuteIntervals(date).forEach((interval) => {
             todayIntervals.push(
                 today.filter(
                     (timestamp) =>
