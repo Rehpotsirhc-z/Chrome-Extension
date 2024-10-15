@@ -117,12 +117,12 @@ const observer = new MutationObserver(() => {
     sendText();
 });
 
-// observer.observe(document.body, {
-//     childList: true,
-//     subtree: true,
-//     //     // attributes: true,
-//     //     // attributesFilter: ["src"],
-// });
+observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    //     // attributes: true,
+    //     // attributesFilter: ["src"],
+});
 
 chrome.runtime.onMessage.addListener(async (message, sender, sendResponse) => {
     if (message.action === "removeImage" && message.imageLink) {
