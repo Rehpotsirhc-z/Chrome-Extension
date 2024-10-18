@@ -205,6 +205,19 @@
         <button class="rounded-button" id="change-password-button">
           Change Password
         </button>
+
+        <br />
+
+        <h2>Set Confidence Percent</h2>
+        <input
+          class="confidence-field"
+          type="number"
+          id="set-confidence-field"
+          placeholder="50"
+          min="0"
+          max="100"
+        />
+
         <div class="change-password-prompt" id="change-password-prompt">
           <h1 class="change-password-title">Change Password</h1>
           <input
@@ -248,6 +261,11 @@
               width="9000px"
               height="400px"
             ></canvas>
+          </div>
+        </div>
+        <div style="width: 80%; overflow-x: auto; overflow-y: hidden">
+          <div style="width: 400px; height: 400px">
+            <canvas id="online-minutes" width="18000px" height="400px"></canvas>
           </div>
         </div>
       </div>

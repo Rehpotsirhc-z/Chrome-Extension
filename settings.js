@@ -25,18 +25,34 @@ document.addEventListener("DOMContentLoaded", () => {
         changePasswordButton,
         changePasswordPrompt,
         submitPasswordButton,
+        setConfidenceField,
         oldPasswordField,
         newPasswordField,
         newPasswordConfirmationField,
+        prevButton,
+        nextButton,
+        dateLabel,
     ] = [
         "logout-button",
         "change-password-button",
         "change-password-prompt",
         "change-password-submit-button",
+        "set-confidence-field",
         "old-password-field",
         "new-password-field",
         "confirm-new-password-field",
+        "prev-day-button",
+        "next-day-button",
+        "current-date-statistics",
     ].map((id) => document.getElementById(id));
+
+    chrome.storage.local.get(["confidence"]).then((result) => {
+        console.log(result.confidence);
+        if (!result.confidence) {
+            chrome.storage.local.set({ confidence: 0.5 });
+        }
+        setConfidenceField.value = result.confidence * 100;
+    });
 
     // Make checkboxes change storage values
     customCheckboxes.forEach((checkbox) => {
@@ -125,6 +141,16 @@ document.addEventListener("DOMContentLoaded", () => {
     // CHANGE PASSWORD PROMPT
     submitPasswordButton.addEventListener("click", submitPassword);
 
+    setConfidenceField.addEventListener("blur", (value) => {
+        percent = value.target.value;
+        if (percent > 100) {
+            setConfidenceField.value = 100;
+            chrome.storage.local.set({ confidence: 1 });
+        } else {
+            chrome.storage.local.set({ confidence: percent / 100 });
+        }
+    });
+
     // TODO Close prompt when clicking out of the prompt
     // Close the prompt when pressing Escape
     // We use addEventListener instead of onkeydown to preserve default
@@ -148,6 +174,27 @@ document.addEventListener("DOMContentLoaded", () => {
         gambling: "gambling",
     };
 
+    let date = new Date();
+    date.setHours(0, 0, 0, 0);
+
+    dateLabel.textContent = date.toDateString();
+
+    prevButton.addEventListener("click", () => {
+        date.setDate(date.getDate() - 1);
+        dateLabel.textContent = date.toDateString();
+        updateCharts(date, eventLog, myChart1);
+        updateCharts(date, eventLog, myChart2);
+        updateCharts(date, eventLog, myChart3);
+    });
+
+    nextButton.addEventListener("click", () => {
+        date.setDate(date.getDate() + 1);
+        dateLabel.textContent = date.toDateString();
+        updateCharts(date, eventLog, myChart1);
+        updateCharts(date, eventLog, myChart2);
+        updateCharts(date, eventLog, myChart3);
+    });
+
     const categoryLog = {};
 
     Promise.all(
@@ -159,6 +206,7 @@ document.addEventListener("DOMContentLoaded", () => {
     ).then(() => {
         console.log(Object.keys(categoryLog));
         console.log(Object.values(categoryLog));
+
         // TODO STATISTICS LOGIC
         const ctx = document
             .getElementById("time-per-category")
@@ -171,7 +219,13 @@ document.addEventListener("DOMContentLoaded", () => {
                     {
                         label: "Time Spent on Category",
                         data: Object.values(categoryLog).map(
-                            (value) => value.length,
+                            (value) =>
+                                value.filter(
+                                    (timestamp) =>
+                                        timestamp >= date &&
+                                        timestamp <
+                                            date.getTime() + 24 * 60 * 60000,
+                                ).length,
                         ),
                         backgroundColor: [
                             "rgba(255, 99, 132, 1)", // Red
@@ -208,12 +262,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const eventLog = [];
 
-    function isWithin5Minutes(timestamp, targetTimestamp) {
-        let time = new Date(timestamp);
-        let endTime = new Date(time.getTime() + 5 * 60000).getTime();
-        return endTime >= targetTimestamp;
-    }
-
     Promise.all(
         [...Object.entries(categories), ["background", "background"]].map(
             ([key, value]) => {
@@ -229,80 +277,32 @@ document.addEventListener("DOMContentLoaded", () => {
         ),
     ).then(() => {
         console.log(eventLog);
-        function generateTimeLabels() {
-            let labels = [];
-            let hours = 0;
-            let minutes = 0;
-            while (hours < 24) {
-                while (minutes < 60) {
-                    labels.push(
-                        `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`,
-                    );
-                    minutes += 5;
-                }
-                hours++;
-                minutes = 0;
-            }
 
-            return labels;
-        }
+        // let today = eventLog.filter(
+        //     (timestamp) =>
+        //         timestamp >= time &&
+        //         timestamp < time.getTime() + 24 * 60 * 60000,
+        // );
 
-        fiveMinutesLabels = generateTimeLabels();
+        // console.log("today", today);
 
-        let time = new Date();
-        time.setHours(0, 0, 0, 0);
+        console.log("intervals", getMinuteIntervals(5, date));
 
-        let today = eventLog.filter(
-            (timestamp) =>
-                timestamp >= time &&
-                timestamp < time.getTime() + 24 * 60 * 60000,
-        );
-
-        console.log("today", today);
-
-        let date = new Date();
-        date.setHours(0, 0, 0, 0);
-
-        let prevButton = document.getElementById("prev-day-button");
-        let nextButton = document.getElementById("next-day-button");
-        let dateLabel = document.getElementById("current-date-statistics");
-        dateLabel.textContent = date.toDateString();
-
-        prevButton.addEventListener("click", () => {
-            date.setDate(date.getDate() - 1);
-            dateLabel.textContent = date.toDateString();
-        });
-
-        nextButton.addEventListener("click", () => {
-            date.setDate(date.getDate() + 1);
-            dateLabel.textContent = date.toDateString();
-        });
-
-        function getFiveMinuteIntervals(date) {
-            let interval = 5 * 60000;
-
-            let result = [];
-
-            for (let i = 0; i < 288; i++) {
-                result.push(date.getTime() + i * interval);
-            }
-
-            return result;
-        }
-
-        console.log("intervals", getFiveMinuteIntervals(date));
-
-        let todayIntervals = [];
-        getFiveMinuteIntervals(date).forEach((interval) => {
-            todayIntervals.push(
-                today.filter(
+        let dateIntervals = [];
+        let intervals = getMinuteIntervals(5, date);
+        intervals.forEach((interval) => {
+            dateIntervals.push(
+                eventLog.filter(
                     (timestamp) =>
                         timestamp >= interval &&
                         timestamp < interval + 5 * 60000,
                 ),
             );
         });
-        console.log(todayIntervals.map((interval) => interval.length));
+        console.log(dateIntervals.map((interval) => interval.length));
+        fiveMinutesLabels = intervals.map((interval) =>
+            formatTime(new Date(interval)),
+        );
 
         // line chart
         const ctx2 = document
@@ -316,7 +316,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     {
                         label: "Number of Events",
                         // data: [12, 19, 3, 5, 2, 3, 10],
-                        data: todayIntervals.map((interval) => interval.length),
+                        data: dateIntervals.map((interval) => interval.length),
                         backgroundColor: "rgba(255, 99, 132, 0.2)",
                         borderColor: "rgba(255, 99, 132, 1)",
                         borderWidth: 1,
@@ -332,8 +332,115 @@ document.addEventListener("DOMContentLoaded", () => {
                 responsive: false,
             },
         });
+        chrome.storage.local.get(["onlineLog"]).then((result) => {
+            console.log(result.onelineLog);
+
+            let dateIntervals = [];
+            let intervals = getMinuteIntervals(1, date);
+            intervals.forEach((interval) => {
+                dateIntervals.push(
+                    eventLog.filter(
+                        (timestamp) =>
+                            timestamp >= interval &&
+                            timestamp < interval + 1 * 60000,
+                    ),
+                );
+            });
+            console.log(dateIntervals.map((interval) => interval.length));
+            oneMinuteLabels = intervals.map((interval) =>
+                formatTime(new Date(interval)),
+            );
+
+            console.log(dateIntervals);
+
+            console.log(
+                dateIntervals.map((timestamp) =>
+                    timestamp.length == 1 ? 1 : 0,
+                ),
+            );
+
+            const ctx2 = document
+                .getElementById("online-minutes")
+                .getContext("2d");
+            const myChart3 = new Chart(ctx2, {
+                type: "line",
+                data: {
+                    labels: oneMinuteLabels,
+                    datasets: [
+                        {
+                            label: "Number of Events",
+                            data: dateIntervals.map((timestamp) =>
+                                timestamp.length == 1 ? 1 : 0,
+                            ),
+                            // data: result.log
+                            backgroundColor: "rgba(255, 99, 132, 0.2)",
+                            borderColor: "rgba(255, 99, 132, 1)",
+                            borderWidth: 1,
+                        },
+                    ],
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                        },
+                    },
+                    responsive: false,
+                    pointStyle: false,
+                    stepped: true,
+                },
+            });
+        });
     });
 });
+function getMinuteIntervals(minutes, date) {
+    let interval = minutes * 60000;
+
+    let result = [];
+
+    for (let i = 0; i < 1440 / minutes; i++) {
+        result.push(date.getTime() + i * interval);
+    }
+
+    return result;
+}
+
+function formatTime(date) {
+    let hours = date.getHours();
+    let minutes = date.getMinutes();
+
+    return `${String(hours).padStart(2, "0")}:${String(minutes).padStart(2, "0")}`;
+}
+
+function updateCharts(date, eventLog, myChart2) {
+    let today = eventLog.filter(
+        (timestamp) =>
+            timestamp >= date && timestamp < date.getTime() + 24 * 60 * 60000,
+    );
+
+    console.log("Updating Charts");
+
+    const intervals = getMinuteIntervals(5, date);
+    let todayIntervals = [];
+    intervals.forEach((interval) => {
+        todayIntervals.push(
+            today.filter(
+                (timestamp) =>
+                    timestamp >= interval && timestamp < interval + 5 * 60000,
+            ),
+        );
+    });
+
+    // Update the line chart
+    myChart2.data.labels = intervals.map((interval) =>
+        formatTime(new Date(interval)),
+    );
+    myChart2.data.datasets[0].data = todayIntervals.map(
+        (interval) => interval.length,
+    );
+
+    myChart2.update();
+}
 
 // FUNCTIONS
 // Resize the expanded presets when the window is resized

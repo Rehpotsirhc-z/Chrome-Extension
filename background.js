@@ -94,6 +94,17 @@ function thirtyDaysAgo() {
     return currentDate - thirtyDays;
 }
 
+setInterval(() => {
+    chrome.storage.local.get(["onlineLog"]).then((result) => {
+        log = Array.from(result.onlineLog || [])
+        console.log(log);
+
+        let time = new Date().getTime();
+        log.push(time);
+        chrome.storage.local.set({onlineLog: log});
+    });
+}, 60000);
+
 chrome.runtime.onMessage.addListener(async (request) => {
     if (request.images) {
         console.log(request.images.length, "images to process");

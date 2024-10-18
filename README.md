@@ -2,8 +2,8 @@
 
 ## Roadmap
 
--   [ ] Days on the graph—Update graph
--   [ ] Confidence threshold setting
--   [ ] Graph for when the extension is active—add to a log every minute or something
+-   [ ] Make text log to pie chart
+-   [ ] Figure out whats up with the chart of active extension
+-   [ ] Make sure that active extension works as intended
 -   [ ] Cache for the text and images
 -   [ ] Figure out line 221 of `settings.js` why there is that error

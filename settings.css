@@ -170,3 +170,21 @@ body {
 .password-field {
     max-width: 95%;
 }
+
+.confidence-field {
+    max-width: 40%;
+    margin-top: 10px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    background-color: #383838;
+    color: #ffffff;
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    width: 100%;
+    max-width: 40%;
+    text-align: center;
+    outline: none;
+}
